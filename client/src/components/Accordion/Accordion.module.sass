@@ -1,0 +1,54 @@
+$---hover-color: #f8fafd
+$---border-type: 1px solid #e7eaf3
+$---hover-text-color: #0052ea
+$---rounded-element: 5px
+
+.accordionMenu
+  margin: 2rem 0 4rem 0
+  border-bottom: $---border-type
+  .menuBox
+    .active, .inactive
+        margin-bottom: 15px
+        padding: 15px
+        line-height: 1.4
+        border: $---border-type
+        border-top: none
+        border-bottom-left-radius: $---rounded-element
+        border-bottom-right-radius: $---rounded-element
+
+    .active
+        display: block
+        
+    .inactive
+        display: none
+
+
+
+.arrowRight, .arrowDown i
+    color: $---hover-text-color
+    font-size: 16px
+
+
+.arrowRight
+    transform: translateY(0px) rotate(-90deg)
+
+.arrowDown, .arrowRight
+    transition: all 0.2s ease-in-out
+
+.accordionHeadingActive, .accordionHeadingInactive
+    display: flex
+    justify-content: space-between
+    border: $---border-type
+    margin: 15px 0 0 0
+    padding: 15px 
+
+    &:hover
+        background-color: $---hover-color
+        color: $---hover-text-color
+        cursor: pointer
+        
+.accordionHeadingActive
+    border-radius: $---rounded-element $---rounded-element none none
+
+.accordionHeadingInactive
+    border-radius: $---rounded-element

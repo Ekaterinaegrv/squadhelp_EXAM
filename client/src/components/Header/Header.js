@@ -125,10 +125,10 @@ class Header extends React.Component {
                       alt="menu"
                     />
                     <ul>
-                      <li><a href="http://www.google.com">HOW IT WORKS</a></li>
+                      <li><a href="/how-it-works">HOW IT WORKS</a></li>
                       <li><a href="http://www.google.com">PRICING</a></li>
                       <li><a href="http://www.google.com">AGENCY SERVICE</a></li>
-                      <li><a href="http://www.google.com">ACTIVE CONTESTS</a></li>
+                      <li><a href="/how-it-works">ACTIVE CONTESTS</a></li>
                       <li><a href="http://www.google.com">WINNERS</a></li>
                       <li><a href="http://www.google.com">LEADERBOARD</a></li>
                       <li className={styles.last}>
