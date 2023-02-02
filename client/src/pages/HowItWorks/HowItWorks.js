@@ -29,7 +29,7 @@ return(
         </div>
     </article>
     
-    <img src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/container.png`} className={styles.mainImage}/>
+    <img src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/container.png`} className={styles.mainImage} alt='How Does Squadhelp Work?'/>
 </section>
 
 {/* 2 block */}          
@@ -66,12 +66,12 @@ return(
 {/* 3 block */}
 <section className={styles.containerPadding}>
     <article  className={styles.heading}>
-        <img className={styles.icon} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/champion-cup.png`}/>
+        <img className={styles.icon} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/champion-cup.png`} alt='champion cup'/>
         <h2>How Do Naming Contests Work?</h2>
     </article>
     
     <section className={styles.howNamingBox}> 
-        <img className={styles.mainImage} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/howDoNaming.png`}/>
+        <img className={styles.mainImage} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/howDoNaming.png`} alt='How Do Naming Contests Work?'/>
         
             <ul className={styles.list}>
                 <li className={styles.listItem}>
@@ -190,7 +190,7 @@ return(
             <span><i class="fas fa-angle-right btn-icon__inner"/></span>
             <div>
                 <h4>Satisfaction Guarantee</h4>
-                <p className={styles.content}>Of course! We have policies in place to ensure that you are satisfied with your experience. <a href='#'>Learn more</a></p>
+                <p className={styles.content}>Of course! We have policies in place to ensure that you are satisfied with your experience. <a href='/'>Learn more</a></p>
             </div>
         </article>
     </div>
@@ -200,7 +200,7 @@ return(
         <p className={styles.content}>Speak with a Squadhelp platform expert to learn more and get your questions answered.</p>
         <button href='#'>Schedule Consultation</button>
         <a href='tel:8773553585'>
-            <img src='https://www.squadhelp.com/resources/assets/imgs/front/phone_icon.svg' className={styles.phoneimg}/>
+            <img src='https://www.squadhelp.com/resources/assets/imgs/front/phone_icon.svg' className={styles.phoneimg} alt='phone'/>
             (877)355-3585</a>
         <a href='tel:8773553585'><p className={styles.content}>Call us for assistance</p></a> 
     </div>
