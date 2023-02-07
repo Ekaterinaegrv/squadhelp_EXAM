@@ -55,6 +55,9 @@ class Header extends React.Component {
                 <li>
                   <Link to="/" style={{ textDecoration: 'none' }}><span>Affiliate Dashboard</span></Link>
                 </li>
+                <li>
+                  <Link to="/events" style={{ textDecoration: 'none' }}><span>My events</span></Link>
+                </li>
                 <li><span onClick={this.logOut}>Logout</span></li>
               </ul>
             </div>
