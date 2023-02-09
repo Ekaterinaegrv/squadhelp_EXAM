@@ -1,28 +1,41 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import {Formik, Form, Field} from 'formik';
+import styles from './EventForm.module.sass'
+
+const reducer = (state, action) => {
+  const { name, value } = action;
+  return {
+    ...state,
+    [name]: value,
+  };
+};
+
 
 const EventForm = (props) => {
- 
-  const [userInput, setUserInput] = useState('');
+
+
+  const [eventInput, dispatch] = useReducer(reducer, {
+    todoText: '',
+    deadline: ''
+  });
+
+  const changeHandler = ({ target: { name, value } }) => {
+    const action = { name, value };
+    dispatch(action);
+  };
+
+
 
   const initialValues = {
     todoText: '',
-    deadlineDate: '',
-    deadlineTime: new Date()
+    deadline: ''
   }
-
-  const changeHandler = ({target:{value}}) => {
-    setUserInput(value);
-    
-  }
-
   
   const submitHandler = (event) => {
-    //event.preventDefault()
-    const {todoText, deadlineDate, deadlineTime} = event;
-
-    props.addTask(userInput);
-    setUserInput('')
+    //event.preventDefault()    
+    props.addTask(eventInput);
+    //setEventInput('');
+    console.log(eventInput)
 
     }
 
@@ -36,23 +49,24 @@ const EventForm = (props) => {
         initialValues={initialValues}
         onSubmit={submitHandler}>
         {(props) => (
-                <Form>
+                <Form
+                className={styles.main}
+                >
                   <Field 
                     type='text' 
                     name="todoText" 
                     placeholder="Type your event title" 
-                    value={userInput}
+                    value={eventInput.todoText}
                     onChange={changeHandler}
                     />
 
                     <Field 
-                    name="deadlineDate" 
-                    type="date"
-                    
-                    />
-                    <Field 
-                    name="deadlineTime" 
-                    type="time"
+                    name="deadline" 
+                    type="datetime-local"
+                    onChange={changeHandler}
+                    value={eventInput.deadline}
+                    // min={new Date()} max={new Date().getTime()}
+
                     />
 
                     <button type="submit">CREATE EVENT</button>

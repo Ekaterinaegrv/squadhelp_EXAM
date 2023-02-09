@@ -19,19 +19,22 @@ $---submenu-color-before-hover: rgba(255,255,255,.7)
 
 $---padding-main: 2vh 5vw 2vh 7vw
 $---line-height-content: 1.7
-    
 
+.main
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    input
+        margin: 1vh 0
+        padding: 1rem
+        border: $---border-type
+        border-radius: $---rounded-element
 
-.containerPadding
-    display: grid 
-    grid-template-columns: repeat(3, 2fr)
-    // grid-row-gap: 15px 
-    grid-column-gap: 4vw 
-    
-    padding: $---padding-main
-    margin: 10vh 0
-    
-    .todoBox
-        grid-column: 2/4
-        //width: 40%
-
+    button
+        margin: 1vh 0
+        background-color: blue
+        color: $---white-color
+        background-color: $---main-blue-color
+        padding: $---btn-padding
+        border-radius: $---btn-round-less
+        border: none
