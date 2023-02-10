@@ -32,16 +32,11 @@ const EventForm = (props) => {
   }
   
   const submitHandler = (event) => {
-    //event.preventDefault()    
     props.addTask(eventInput);
-    //setEventInput('');
     console.log(eventInput)
 
     }
 
-  // const nowDate = new Date().toISOString();     //2023-02-09T14:30:28.422Z 
-  //need:   min="2017-06-01T08:30" 
-  // console.log(nowDate)
 
 
   return (

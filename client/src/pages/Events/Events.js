@@ -15,8 +15,8 @@ const Events = (props) => {
     const newItem = {
       id:  Math.random().toString(6).substring(2,9),
       event: todoText,
-      // complete: false, 
-      deadline: deadline,   //"2023-02-21T03:45"
+      complete: false, 
+      deadline: Date.parse(new Date(deadline)),
     }
     if(todos){
       setTodos([...todos, newItem]);
@@ -27,7 +27,6 @@ const Events = (props) => {
       setTodos([newItem])
       localStorage.setItem('myEvents',JSON.stringify([newItem]));
     }
-    //new Date().toString() - дата сейчас 
   }
 
   }
@@ -38,20 +37,31 @@ const removeTask = (id) => {
   localStorage.setItem('myEvents',JSON.stringify([...filtered]))
 }
 
-// const handleToggle = (id) => { 
-//   const toggle = todos.map((elem)=>
-//       elem.id === id ? {...elem, complete: !elem.complete} : {...elem}
-//   )
-//   setTodos([...toggle]);
-//   localStorage.setItem('myEvents',JSON.stringify([...toggle]))
-// }
-
-
 
 useEffect(()=> {
-  setTodos(JSON.parse(localStorage.getItem('myEvents'))); //тут мы запихиваем localStorage в стейт
-  },[])
+   setTodos(JSON.parse(localStorage.getItem('myEvents'))); 
+},[])
 
+
+ const setCompleteStatus = (id, isComplete) => {
+    if(isComplete) {
+      const complete = todos.map((elem)=>
+          elem.id === id ? {...elem, complete: elem.complete = true} : {...elem}
+      )
+      setTodos([...complete]);
+      localStorage.setItem('myEvents',JSON.stringify([...complete]))
+    }
+ }
+
+if(todos) {
+  const compare = (a, b) => {
+    if(a.deadline < b.deadline) return -1;
+    else if(a.deadline > b.deadline) return 1;
+    return 0
+  }      
+  
+  todos.sort(compare)
+}
 
 
 
@@ -63,11 +73,13 @@ useEffect(()=> {
               <h1>Create your events list</h1>
               
               <EventForm 
-                addTask={addTask}/>
+                addTask={addTask}
+                />
             </div>
           
             <div className={styles.todoBox}>
-              <h3>You have a {todos ? todos.length : 0} uncompleted events</h3>
+              <h3>You have a {todos ? todos.length : 0} open events</h3>
+              <p>If you completed event - just delete it by clicking trash icon</p>
 
               <ul>
                 {todos ? (todos.map((todo) => {
@@ -75,9 +87,9 @@ useEffect(()=> {
                       <RenderEvent
                       todo={todo}
                       key={todo.id}
-                      // toggleTask={handleToggle}
                       removeTask={removeTask}
-                      // complete={todo.complete}
+                      completeToState={setCompleteStatus}
+                
                       />
                     )
 
@@ -86,10 +98,6 @@ useEffect(()=> {
                 }
               </ul>
             </div>
-            
-
-            
-              
         
           </section>
 

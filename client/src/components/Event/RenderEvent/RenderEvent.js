@@ -2,49 +2,43 @@ import React, { useEffect, useState } from "react";
 import TimerEvent from "../TimerEvent/TimerEvent";
 import styles from './RenderEvent.module.sass';
 
-//clearInterval(id);
-// let progressBarWidth = timeleft / timetotal * $element.width();
-
 
 const RenderEvent = (props) => {
-    const {removeTask, todo, todo:{deadline, event, id}} = props;
+    const {removeTask, completeToState, todo, todo:{deadline, event, id, complete}} = props;
 
-
-    // useEffect(() => {
-    //     // const isComplete = newdeadline <= new Date() ? 'comleted' : 'not yet';
-    //     const dateNow = Date.parse(new Date());
-    //     const dedlineDate = Date.parse(deadline);
-    //     setTimeout(() => {
-    //         console.log(`IS END ${event}`);
-    //         console.log(`complete ${complete}`);
-    //         //toggleTask(id)
-    //     },
-    //     dedlineDate - dateNow )
-    //   }, []);
-
-
+    const formatDate = () => {
+        const deadlineTime = new Date(deadline)
+        const deadlineTimeToLocal = deadlineTime.toLocaleDateString("ru-RU", { hour: "2-digit", minute: "2-digit"})
+        return(deadlineTimeToLocal)
+    }
 
     return (
     
     <>
     <li 
     key={todo.id}
-    className={styles.listItem} >
-    
-
-        <span 
-        >{todo.event}</span>
+    className={styles[complete ? 'listItemCompete' : 'listItemNotCompete']} 
+    >
+        <div className={styles.eventBox}>
+        <span>Your event</span>
+        <span className={styles.event}>{todo.event}</span>
+        </div>
         
-        <span>{todo.deadline}</span>
+        <div className={styles.eventBox}>
+        <span>Deadline</span>
+        <span className={styles.deadline}>{formatDate()}</span>
+        </div>
+
 
         <span onClick={()=> removeTask(todo.id)}>
-            X
+            <i className="fas fa-trash"></i>    
         </span>
     </li>
+    
 
     <TimerEvent
         todo={todo}
-      
+        completeToState={completeToState}
     />
 
     </>
@@ -54,24 +48,3 @@ const RenderEvent = (props) => {
   };
 
 export default RenderEvent;
-
-/**
-
-    //   useEffect(()=>{
-    //     setInterval(() => {
-    //         console.dir(todo)
-    //     }, 5000);
-    //   })
-
-    //   useEffect(()=>{
-    //     const dedlineDate = Date.parse(deadline);
-    //     setInterval(() => {
-    //         const dateNow = Date.parse(new Date());
-    //         const width = Math.floor(dateNow * 100 / dedlineDate);
-    //         console.log(`Left ${width}%`);
-
-    //         dedlineDate - dateNow
-    //     }, 50000);
-      
-    //   }, [])
- */
