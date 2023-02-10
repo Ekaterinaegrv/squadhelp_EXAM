@@ -39,7 +39,9 @@ const EventForm = (props) => {
 
     }
 
-  
+  // const nowDate = new Date().toISOString();     //2023-02-09T14:30:28.422Z 
+  //need:   min="2017-06-01T08:30" 
+  // console.log(nowDate)
 
 
   return (
@@ -65,7 +67,7 @@ const EventForm = (props) => {
                     type="datetime-local"
                     onChange={changeHandler}
                     value={eventInput.deadline}
-                    // min={new Date()} max={new Date().getTime()}
+                    // min={nowDate}
 
                     />
 

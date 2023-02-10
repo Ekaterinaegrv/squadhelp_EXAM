@@ -3,7 +3,7 @@ import styles from "./Events.module.sass";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import EventForm from "../../components/Event/EventForm/EventForm";
-import EventTimer from "../../components/Event/EventTimer/RenderEvent";
+import RenderEvent from "../../components/Event/RenderEvent/RenderEvent";
 
 
 const Events = (props) => {
@@ -15,7 +15,7 @@ const Events = (props) => {
     const newItem = {
       id:  Math.random().toString(6).substring(2,9),
       event: todoText,
-      complete: false, 
+      // complete: false, 
       deadline: deadline,   //"2023-02-21T03:45"
     }
     if(todos){
@@ -38,13 +38,13 @@ const removeTask = (id) => {
   localStorage.setItem('myEvents',JSON.stringify([...filtered]))
 }
 
-const handleToggle = (id) => { 
-  const toggle = todos.map((elem)=>
-      elem.id === id ? {...elem, complete: !elem.complete} : {...elem}
-  )
-  setTodos([...toggle]);
-  localStorage.setItem('myEvents',JSON.stringify([...toggle]))
-}
+// const handleToggle = (id) => { 
+//   const toggle = todos.map((elem)=>
+//       elem.id === id ? {...elem, complete: !elem.complete} : {...elem}
+//   )
+//   setTodos([...toggle]);
+//   localStorage.setItem('myEvents',JSON.stringify([...toggle]))
+// }
 
 
 
@@ -72,12 +72,12 @@ useEffect(()=> {
               <ul>
                 {todos ? (todos.map((todo) => {
                     return(
-                      <EventTimer
+                      <RenderEvent
                       todo={todo}
                       key={todo.id}
-                      toggleTask={handleToggle}
+                      // toggleTask={handleToggle}
                       removeTask={removeTask}
-                      complete={todo.complete}
+                      // complete={todo.complete}
                       />
                     )
 
