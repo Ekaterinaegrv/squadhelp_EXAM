@@ -117,6 +117,7 @@ class Header extends React.Component {
                       alt="menu"
                     />
                     <ul>
+                      <li><a href="/button-component">BUTTON COMPONENT</a></li>
                       <li><a href="/">BEAUTY</a></li>
                       <li><a href="/">CONSULTING</a></li>
                       <li><a href="/">E-COMMERCE</a></li>

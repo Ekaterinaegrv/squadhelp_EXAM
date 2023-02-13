@@ -1,0 +1,70 @@
+$---main-blue-color: #0052ea
+$---white-color: #fff
+$---heading-black: #1e2022
+$---heading-blue: #0052ea
+$---content-font-color: #77838f
+
+$---btn-round-more: 30px
+$---btn-round-less: 5px
+$---btn-padding: 0.8rem 1rem
+
+$---rounded-element: 5px
+
+$---subtitle-bg-color: rgba(55,125,255,.1)
+
+$---hover-color: #f8fafd
+$---border-type: 1px solid #e7eaf3
+
+$---submenu-color-before-hover: rgba(255,255,255,.7)
+
+$---padding-main: 2vh 5vw 2vh 7vw
+$---line-height-content: 1.7
+
+.containerPadding
+    padding: $---padding-main 
+    margin: 10vh 0
+    font-color: $---content-font-color
+    .main
+        display: grid 
+        grid-template-columns: repeat(3, 2fr)
+        grid-column-gap: 5%
+        @media(max-width: 1000px)
+          display: flex
+          flex-direction: column
+    .boxInactive
+        display: flex
+        flex-direction: column
+        align-items: center
+        border: $---border-type
+        border-radius: $---rounded-element
+        padding: 2rem
+        text-align: center
+        .button
+            margin-bottom: 1rem
+            padding: 0.7rem
+            width: 70px
+            background-color: $---content-font-color
+            border: none
+            border-radius: 30px
+            color: $---white-color
+    .boxActive
+        display: flex
+        flex-direction: column
+        align-items: center
+        border: 3px solid #2cb9b7
+        border-radius: $---rounded-element
+        padding: 2rem
+        text-align: center
+        .button
+            margin-bottom: 1rem
+            padding: 0.7rem
+            width: 70px
+            background-color: #2cb9b7
+            border: none
+            border-radius: 30px
+            color: $---white-color
+
+
+
+            
+
