@@ -12,7 +12,7 @@ const ButtonGroup = (props) =>{
         minor_variations_allowed: '',
         looking_name_not_domain: ''
     }
-    
+     
     const submitHandler = (event) => {
         console.log(state)
     } 
@@ -30,7 +30,7 @@ return(
 
     <Formik
         initialValues={initialValues}
-        onSubmit={submitHandler}>
+        onSubmit={submitHandler}> 
         {(props) => (
             <Form
                 className={styles.main}>
