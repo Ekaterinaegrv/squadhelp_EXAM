@@ -1,0 +1,3 @@
+db.messages.find({body:/паровоз/i}).count();
+//or
+db.messages.find( { 'body' : { '$regex' : 'паровоз', '$options' : 'i' } } ).count();
