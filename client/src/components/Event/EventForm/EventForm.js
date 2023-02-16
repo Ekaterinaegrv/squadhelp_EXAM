@@ -16,19 +16,20 @@ const EventForm = (props) => {
 
   const [eventInput, dispatch] = useReducer(reducer, {
     todoText: '',
-    deadline: ''
+    deadline: '',
+    notification: ''
   });
 
   const changeHandler = ({ target: { name, value } }) => {
     const action = { name, value };
     dispatch(action);
+    console.log(value)
   };
-
-
 
   const initialValues = {
     todoText: '',
-    deadline: ''
+    deadline: '', 
+    notification: ''
   }
   
   const submitHandler = (event) => {
@@ -62,9 +63,22 @@ const EventForm = (props) => {
                     type="datetime-local"
                     onChange={changeHandler}
                     value={eventInput.deadline}
-                    // min={nowDate}
-
                     />
+
+                    <select 
+                        name="notification" 
+                        onChange={changeHandler}
+                        value={eventInput.notification}>
+                          
+                      <option disabled="disabled">When to remind about the event</option>
+                      <option value='120'>2 minute</option>
+                      <option value='3600'>1 hour</option>
+                      <option value='21600'>6 hours</option>
+                      <option value='43200'>12 hours</option>
+                      <option value='86400'>24 hours</option>
+                    </select> 
+                    
+                  
 
                     <button type="submit">CREATE EVENT</button>
 

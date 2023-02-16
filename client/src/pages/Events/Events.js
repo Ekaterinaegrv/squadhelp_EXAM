@@ -11,12 +11,13 @@ const Events = (props) => {
 
   const addTask = (eventInput) => {
   if(eventInput) {
-    const {todoText, deadline} = eventInput;
+    const {todoText, deadline, notification} = eventInput;
     const newItem = {
       id:  Math.random().toString(6).substring(2,9),
       event: todoText,
       complete: false, 
       deadline: Date.parse(new Date(deadline)),
+      notification: notification
     }
     if(todos){
       setTodos([...todos, newItem]);
@@ -52,6 +53,7 @@ useEffect(()=> {
       localStorage.setItem('myEvents',JSON.stringify([...complete]))
     }
  }
+
 
 if(todos) {
   const compare = (a, b) => {
