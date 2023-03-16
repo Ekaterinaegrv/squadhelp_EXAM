@@ -7,14 +7,30 @@ import Header from '../../components/Header/Header';
 
 const Dashboard = (props) => {
   const { role, history } = props;
+
+
+  const dashboardRender = () => {
+    switch(role) {
+      case CONSTANTS.CUSTOMER:{
+        return (<CustomerDashboard history={history} match={props.match} />)
+      }
+      case CONSTANTS.CREATOR:{
+        return (<CreatorDashboard history={history} match={props.match} />)
+      }
+      case CONSTANTS.MODERATOR:{
+        return (<CustomerDashboard history={history} match={props.match} role={props.role}/>)
+      }
+       
+      }
+  }
+  
+
   return (
     <div>
       <Header />
-      {
-                role === CONSTANTS.CUSTOMER
-                  ? <CustomerDashboard history={history} match={props.match} />
-                  : <CreatorDashboard history={history} match={props.match} />
-            }
+      {dashboardRender()}
+               
+               
     </div>
   );
 };

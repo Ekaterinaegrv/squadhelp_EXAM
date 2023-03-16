@@ -16,7 +16,7 @@ import styles from './OfferBox.module.sass';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import './confirmStyle.css';
 
-const OfferBox = (props) => {                                        ////компонента генерит офферы
+const OfferBoxForModerator = (props) => { 
   const findConversationInfo = () => {
     const { messagesPreview, id } = props;
     const participants = [id, props.data.User.id];
@@ -34,14 +34,14 @@ const OfferBox = (props) => {                                        ////ком�
     return null;
   };
 
-  const resolveOffer = () => {
+  const allowOffer = () => {
     confirmAlert({
       title: 'confirm',
       message: 'Are u sure?',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'resolve'),
+          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'pending'),
         },
         {
           label: 'No',
@@ -50,14 +50,14 @@ const OfferBox = (props) => {                                        ////ком�
     });
   };
 
-  const rejectOffer = () => {
+  const blockOffer = () => {
     confirmAlert({
       title: 'confirm',
       message: 'Are u sure?',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'reject'),
+          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'block'),
         },
         {
           label: 'No',
@@ -86,9 +86,12 @@ const OfferBox = (props) => {                                        ////ком�
       return <i className={classNames('fas fa-thumbs-up', styles.resolve)} />;
     } if (status === CONSTANTS.OFFER_STATUS_BLOCK) {
       return <i className={classNames('fas fa-thumbs-down', styles.reject)} />;
+    } if (status === CONSTANTS.OFFER_STATUS_PENDING) {
+      return <i className={classNames('fas fa-spinner', styles.reject)} />;
     } if (status === CONSTANTS.OFFER_STATUS_NEW) {
       return <i className={classNames('fas fa-question', styles.newOffer)} />;
-    }  
+    } 
+
     return null;
   };
 
@@ -101,9 +104,9 @@ const OfferBox = (props) => {                                        ////ком�
   } = props;
   const {
     avatar, firstName, lastName, email, rating,
-  } = props.data.User;                     
-      return ( 
-      <div className={styles.offerContainer}>
+  } = props.data.User; 
+  return (
+    <div className={styles.offerContainer}>
       {offerStatus()}
       <div className={styles.mainInfoContainer}>
         <div className={styles.userInfo}>
@@ -160,16 +163,18 @@ const OfferBox = (props) => {                                        ////ком�
         </div>
         {role !== CONSTANTS.CREATOR && <i onClick={goChat} className="fas fa-comments" />}
       </div>
-      {props.needButtons(data.status) && (
-      <div className={styles.btnsContainer}>
-        <div onClick={resolveOffer} className={styles.resolveBtn}>Resolve</div>
-        <div onClick={rejectOffer} className={styles.rejectBtn}>Reject</div>
-      </div>
-      )}
+
+
+    {props.needButtons(data.status) && (
+    <div className={styles.btnsContainer}>
+      <div onClick={allowOffer} className={styles.resolveBtn}>Allow</div>
+      <div onClick={blockOffer} className={styles.rejectBtn}>Block</div>
+    </div>
+    )}
     </div>
     
-   
-  )
+
+  );
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -188,4 +193,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OfferBox));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OfferBoxForModerator));

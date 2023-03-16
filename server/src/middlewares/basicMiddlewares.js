@@ -23,7 +23,13 @@ module.exports.canGetContest = async (req, res, next) => {
       result = await bd.Contests.findOne({
         where: { id: req.headers.contestid, userId: req.tokenData.userId },
       });
-    } else if (req.tokenData.role === CONSTANTS.CREATOR) {
+    }
+    if (req.tokenData.role === CONSTANTS.MODERATOR) {
+      result = await bd.Contests.findOne({
+        where: { id: req.headers.contestid},
+      });
+    }
+    else if (req.tokenData.role === CONSTANTS.CREATOR) {
       result = await bd.Contests.findOne({
         where: {
           id: req.headers.contestid,
@@ -84,16 +90,30 @@ module.exports.canSendOffer = async (req, res, next) => {
 
 module.exports.onlyForCustomerWhoCreateContest = async (req, res, next) => {
   try {
-    const result = await bd.Contests.findOne({
-      where: {
-        userId: req.tokenData.userId,
-        id: req.body.contestId,
-        status: CONSTANTS.CONTEST_STATUS_ACTIVE,
-      },
-    });
-    if (!result) {
-      return next(new RightsError());
+    if (req.tokenData.role === CONSTANTS.MODERATOR) {
+      const result = await bd.Contests.findOne({
+        where: {
+          id: req.body.contestId,
+          status: CONSTANTS.CONTEST_STATUS_ACTIVE,
+        },
+      });
+      if (!result) {
+        return next(new RightsError());
+      }
+    } else {
+      const result = await bd.Contests.findOne({
+        where: {
+          userId: req.tokenData.userId,
+          id: req.body.contestId,
+          status: CONSTANTS.CONTEST_STATUS_ACTIVE,
+        },
+      });
+      if (!result) {
+        return next(new RightsError());
+      }
+     
     }
+    
     next();
   } catch (e) {
     next(new ServerError());
