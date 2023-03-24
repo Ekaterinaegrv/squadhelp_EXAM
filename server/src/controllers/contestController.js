@@ -240,11 +240,8 @@ const blockOffer = async (offerId, email, title, command) => {
     return updatedOffers; 
 };
 
-
 module.exports.setOfferStatus = async (req, res, next) => {
-  let transaction;
-  const {offerId} = req.body;
-  
+  let transaction; 
   if (req.body.command === 'reject') {
     try {
       const offer = await rejectOffer(req.body.offerId, req.body.creatorId,
@@ -264,27 +261,17 @@ module.exports.setOfferStatus = async (req, res, next) => {
       transaction.rollback();
       next(err);
     }
-  }
-  if (req.body.command === 'pending') {
-    const {email, title, command} = req.body;
-
+  } if (req.body.command === 'pending') {
     try {                                              
-      const updatedOffers = await allowOffer(offerId, email, title, command);
-
+      const updatedOffers = await allowOffer(req.body.offerId, req.body.email, req.body.title, req.body.command);
       res.send(updatedOffers);
-
       } catch (err) {
       next(err);
     }
-  }
-  if (req.body.command === 'block') {
+  } if (req.body.command === 'block') {
     try {
-      const {email, title, command} = req.body;
-
-      const updatedOffers = await blockOffer(offerId, email, title, command);
-
+      const updatedOffers = await blockOffer(req.body.offerId, req.body.email, req.body.title, req.body.command);
       res.send(updatedOffers);
-
       } catch (err) {
       next(err);
     }

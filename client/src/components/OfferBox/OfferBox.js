@@ -16,7 +16,7 @@ import styles from './OfferBox.module.sass';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import './confirmStyle.css';
 
-const OfferBox = (props) => {                                        ////компонента генерит офферы
+const OfferBox = (props) => {
   const findConversationInfo = () => {
     const { messagesPreview, id } = props;
     const participants = [id, props.data.User.id];
@@ -158,7 +158,7 @@ const OfferBox = (props) => {                                        ////ком�
           />
           )}
         </div>
-        {role !== CONSTANTS.CREATOR && <i onClick={goChat} className="fas fa-comments" />}
+        {role !== CONSTANTS.CREATOR && <i onClick={goChat} className={classNames("fas fa-comments", styles.comments)} />}
       </div>
       {props.needButtons(data.status) && (
       <div className={styles.btnsContainer}>

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Conversation.init({
     participants: {
-      type: DataTypes.ARRAY,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false
     },
     blackList: {

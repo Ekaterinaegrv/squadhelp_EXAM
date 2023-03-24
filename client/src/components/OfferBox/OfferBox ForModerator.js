@@ -79,17 +79,15 @@ const OfferBoxForModerator = (props) => {
   const offerStatus = () => {
     const { status } = props.data;
     if (status === CONSTANTS.OFFER_STATUS_REJECTED) {
-      return <i className={classNames('fas fa-times-circle reject', styles.reject)} />;
+      return <i className={classNames(styles.reject)}>Rejected</i>;
     } if (status === CONSTANTS.OFFER_STATUS_WON) {
-      return <i className={classNames('fas fa-check-circle resolve', styles.resolve)} />;
-    } if (status === CONSTANTS.OFFER_STATUS_PENDING) {
-      return <i className={classNames('fas fa-thumbs-up', styles.resolve)} />;
+      return <i className={classNames(styles.resolve)}>Won</i>;
     } if (status === CONSTANTS.OFFER_STATUS_BLOCK) {
-      return <i className={classNames('fas fa-thumbs-down', styles.reject)} />;
+      return <i className={classNames(styles.reject)}>Block</i>;
     } if (status === CONSTANTS.OFFER_STATUS_PENDING) {
-      return <i className={classNames('fas fa-spinner', styles.reject)} />;
+      return <i className={classNames(styles.resolve)}>Allow by moderator</i>;
     } if (status === CONSTANTS.OFFER_STATUS_NEW) {
-      return <i className={classNames('fas fa-question', styles.newOffer)} />;
+      return <i className={classNames( styles.newOffer)}>New offer</i>;
     } 
 
     return null;
@@ -161,7 +159,7 @@ const OfferBoxForModerator = (props) => {
           />
           )}
         </div>
-        {role !== CONSTANTS.CREATOR && <i onClick={goChat} className="fas fa-comments" />}
+        {role !== CONSTANTS.CREATOR && <i onClick={goChat} className={classNames("fas fa-comments", styles.comments)} />}
       </div>
 
 
