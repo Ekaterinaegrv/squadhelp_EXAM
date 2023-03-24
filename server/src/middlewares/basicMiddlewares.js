@@ -1,5 +1,4 @@
 const bd = require('../models');
-const NotFound = require('../errors/UserNotFoundError');
 const RightsError = require('../errors/RightsError');
 const ServerError = require('../errors/ServerError');
 const CONSTANTS = require('../constants');
@@ -8,9 +7,8 @@ module.exports.parseBody = (req, res, next) => {
   req.body.contests = JSON.parse(req.body.contests);
   for (let i = 0; i < req.body.contests.length; i++) {
     if (req.body.contests[ i ].haveFile) {
-      const file = req.files.splice(0, 1);
-      req.body.contests[ i ].fileName = file[ 0 ].filename;
-      req.body.contests[ i ].originalFileName = file[ 0 ].originalname;
+      req.body.contests[ i ].fileName = req.files[i].filename;
+      req.body.contests[ i ].originalFileName = req.files[i].originalname;
     }
   }
   next();

@@ -22,26 +22,33 @@ const OfferForm = (props) => {
           }}
         />
       );
-    }
-    return (
-      <FormInput
-        name="offerData"
-        classes={{
-          container: styles.inputContainer,
-          input: styles.input,
-          warning: styles.fieldWarning,
-          notValid: styles.notValid,
-        }}
-        type="text"
-        label="your suggestion"
-      />
-    );
+    } else {
+      return (
+        <FormInput                 
+         name="offerData"
+         classes={{
+           container: styles.inputContainer,
+           input: styles.input,
+           warning: styles.fieldWarning,
+           notValid: styles.notValid,
+         }}
+         type="text"
+         label="your suggestion"
+       />
+     );
+    }  
   };
 
   const setOffer = (values, { resetForm }) => {
     props.clearOfferError();
-    const data = new FormData();
+    const fileInput = document.querySelector('#myform');
     const { contestId, contestType, customerId } = props;
+    let data;
+      if (props.contestType === CONTANTS.LOGO_CONTEST) {
+        data = new FormData(fileInput);
+    } else {
+      data = new FormData();
+    }
     data.append('contestId', contestId);
     data.append('contestType', contestType);
     data.append('offerData', values.offerData);
@@ -50,7 +57,7 @@ const OfferForm = (props) => {
     resetForm();
   };
 
-  const { valid, addOfferError, clearOfferError } = props;
+  const { addOfferError, clearOfferError } = props;
   const validationSchema = props.contestType === CONTANTS.LOGO_CONTEST ? Schems.LogoOfferSchema : Schems.TextOfferSchema;
   return (
     <div className={styles.offerContainer}>
@@ -63,9 +70,9 @@ const OfferForm = (props) => {
         }}
         validationSchema={validationSchema}
       >
-        <Form className={styles.form}>
+        <Form className={styles.form} id='myform'>
           {renderOfferInput()}
-          {valid && <button type="submit" className={styles.btnOffer}>Send Offer</button>}
+          {<button type="submit" className={styles.btnOffer}>Send Offer</button>}
         </Form>
       </Formik>
     </div>

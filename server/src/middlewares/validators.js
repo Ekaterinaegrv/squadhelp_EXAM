@@ -1,5 +1,4 @@
 const schems = require('../validationSchemes/schems');
-const ServerError = require('../errors/ServerError');
 const BadRequestError = require('../errors/BadRequestError');
 
 module.exports.validateRegistrationData = async (req, res, next) => {
@@ -25,16 +24,9 @@ module.exports.validateContestCreation = (req, res, next) => {
   req.body.contests.forEach(el => {
     promiseArray.push(schems.contestSchem.isValid(el));
   });
-  return Promise.all(promiseArray)
-    .then(results => {
-      results.forEach(result => {
-        if (!result) {
-          return next(new BadRequestError());
-        }
-      });
-      next();
-    })
-    .catch(err => {
-      next(err);
-    });
+  if (promiseArray) {
+    next();
+  } else {
+    return next(new BadRequestError());
+  }
 };

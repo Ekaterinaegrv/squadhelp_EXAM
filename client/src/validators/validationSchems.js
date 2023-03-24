@@ -17,7 +17,7 @@ export default {
     agreeOfTerms: yup.boolean().oneOf([true], 'Must Accept Terms and Conditions').required('Must Accept Terms and Conditions'),
   }),
   ContestSchem: yup.object({
-    nameVenture: yup.string().min(3),
+    nameVenture: yup.string(),
     contestType: yup.string().matches(/(name|tagline|logo)/).required(),
     title: yup.string().test('test-title', 'required', (value) => (value && value.trim().length >= 1)).required('title of contest required'),
     industry: yup.string().required('industry required'),
