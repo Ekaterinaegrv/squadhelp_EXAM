@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import moment from 'moment';
 
-
-
-
-
 const TimerEvent = (props) => {
     const {todo, todo:{id}, completeToState} = props;
     const [deadlineState, setDeadline] = useState({
@@ -17,30 +13,26 @@ const TimerEvent = (props) => {
 
     const intervalHandler = () => {
         const time = moment(dedlineDate).endOf().fromNow(); 
-        console.log(time)
-        props.durationUntilFinish(time.toString())
+        props.durationUntilFinish(time.toString());
     }
   
     useEffect(() => {                                           
         const dateNow = Date.parse(new Date());
         const dedlineDate = deadlineState.date;
-        // intervalHandler();
-        // const idInterval = setInterval(() => intervalHandler, 5000);      
+        intervalHandler();
+        const idInterval = setInterval(() => intervalHandler, 2000);      
         
         const idTimer = setTimeout(() => {
             setDeadline(deadlineState, deadlineState.isComplete = true);
             completeToState(id, deadlineState.isComplete);
             console.log('finish')
-            // clearInterval(idInterval)    
+            clearInterval(idInterval)    
         },
         dedlineDate - dateNow )
 
         return () => {
             clearTimeout(idTimer);
         }
-
-        
-
     }, []);
 
     return (

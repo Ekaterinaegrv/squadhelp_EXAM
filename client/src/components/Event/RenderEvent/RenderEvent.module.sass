@@ -1,39 +1,24 @@
-$---main-blue-color: #0052ea
 $---white-color: #fff
-$---heading-black: #1e2022
-$---heading-blue: #0052ea
-$---content-font-color: #77838f
-
-$---btn-round-more: 30px
-$---btn-round-less: 5px
-$---btn-padding: 0.8rem 1rem
-
 $---rounded-element: 5px
-
-$---subtitle-bg-color: rgba(55,125,255,.1)
-
-$---hover-color: #f8fafd
 $---border-type: 1px solid #e7eaf3
-
-$---submenu-color-before-hover: rgba(255,255,255,.7)
-
-$---padding-main: 2vh 5vw 2vh 7vw
-$---line-height-content: 1.7
     
-
 .listItemNotCompete
-    width: 70%
+    width: 100%
     margin: 1vh 0
     padding: 1rem
     border: $---border-type
     border-radius: $---rounded-element
+    display: grid
+    grid-template-columns: 2fr, 2fr, 2fr, 1fr
+    grid-gap: 15px 
     display: flex
     justify-content: space-between    
     position: relative
+    box-sizing: border-box
     span
         margin: auto 0
 .listItemCompete
-    width: 70%
+    width: 100%
     margin: 1vh 0
     padding: 1rem
     border: $---border-type
@@ -43,11 +28,13 @@ $---line-height-content: 1.7
     position: relative
     background-color: #DB324D
     color: $---white-color
+    box-sizing: border-box
     span
         margin: auto 0
 .eventBox
     display: flex
     flex-direction: column
+    width: 30%
     span:first-child
         font-size: 0.7rem
         padding-bottom: 0.5rem

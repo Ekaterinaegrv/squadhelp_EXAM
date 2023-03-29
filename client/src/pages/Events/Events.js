@@ -4,12 +4,14 @@ import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import EventForm from "../../components/Event/EventForm/EventForm";
 import RenderEvent from "../../components/Event/RenderEvent/RenderEvent";
+import NotificationEvent from "../../components/Event/TimerEvent/NotificationEvent";
 
 
 const Events = (props) => {
   const [todos, setTodos] = useState([]);
 
   const addTask = (eventInput) => {
+  console.log(eventInput)
   if(eventInput) {
     const {todoText, deadline, notification} = eventInput;
     const newItem = {
@@ -60,18 +62,15 @@ if(todos) {
     if(a.deadline < b.deadline) return -1;
     else if(a.deadline > b.deadline) return 1;
     return 0
-  }      
-  
+  }
   todos.sort(compare)
 }
-
-
 
       return (
           <>
           <Header/>
           <section className={styles.containerPadding}>
-            <div>
+            <div className={styles.formBox}>
               <h1>Create your events list</h1>
               
               <EventForm 
@@ -86,13 +85,17 @@ if(todos) {
               <ul>
                 {todos ? (todos.map((todo) => {
                     return(
+                      <>
                       <RenderEvent
                       todo={todo}
                       key={todo.id}
                       removeTask={removeTask}
                       completeToState={setCompleteStatus}
-                
                       />
+                      <NotificationEvent
+                      todo={todo}
+                      />
+                      </>
                     )
 
                 })) 
@@ -100,6 +103,7 @@ if(todos) {
                 }
               </ul>
             </div>
+         
         
           </section>
 

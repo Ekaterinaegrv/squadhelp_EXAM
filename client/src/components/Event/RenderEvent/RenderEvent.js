@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import NotificationEvent from "../TimerEvent/NotificationEvent";
+import React, { useState } from "react";
 import TimerEvent from "../TimerEvent/TimerEvent";
 import styles from './RenderEvent.module.sass';
-import moment from 'moment';
 
 
 const RenderEvent = (props) => {
@@ -17,11 +15,10 @@ const RenderEvent = (props) => {
     }
 
     const durationUntilFinish = (left) => {
-            setNowLeft(left)
+        setNowLeft(left);
     }
-
+ 
     return (
-    
     <>
     <li 
     key={todo.id}
@@ -39,32 +36,21 @@ const RenderEvent = (props) => {
 
         <div className={styles.eventBox}>
         <span>When deadline</span>
-        <div>{nowLeft === undefined ? 'refresh page' : nowLeft}</div>
+        <div>{nowLeft === undefined ? 'No data' : nowLeft}</div>
         </div>
 
         <span onClick={()=> removeTask(todo.id)}>
             <i className="fas fa-trash"></i>    
-        </span>
-    
+        </span>  
     </li>
-    
-
 
     <TimerEvent
         todo={todo}
         completeToState={completeToState}
         durationUntilFinish={durationUntilFinish}
-
     />
-    {/* <NotificationEvent
-        todo={todo}
-
-        /> */}
-
     </>
-
     )
-
   };
 
 export default RenderEvent;
