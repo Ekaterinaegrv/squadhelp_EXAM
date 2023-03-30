@@ -3,20 +3,14 @@ $---white-color: #fff
 $---heading-black: #1e2022
 $---heading-blue: #0052ea
 $---content-font-color: #77838f
-
 $---btn-round-more: 30px
 $---btn-round-less: 5px
 $---btn-padding: 0.8rem 1rem
-
 $---rounded-element: 5px
-
 $---subtitle-bg-color: rgba(55,125,255,.1)
-
 $---hover-color: #f8fafd
 $---border-type: 1px solid #e7eaf3
-
 $---submenu-color-before-hover: rgba(255,255,255,.7)
-
 $---padding-main: 2vh 5vw 2vh 7vw
 $---line-height-content: 1.7
 
@@ -30,7 +24,7 @@ h1,h2,h3,h4,h5
 h1
   font-size: 40px
   font-weight: 700
-  margin: 1rem 0
+  margin: 2rem 0
 h2
   font-size: 32px
 h3
@@ -49,17 +43,23 @@ h5
 .containerPadding
   padding: $---padding-main
   margin: 10vh 0
-  // border-top: $---border-type ---> перенести куда надо
+  @media screen and (max-width: 720px)
+    margin: 2vh 0
 
-  
+
 .container
   display: flex
   justify-content: space-between
   padding: $---padding-main
   padding-top: 0
+  @media screen and (max-width: 720px)
+    display: flex
+    flex-direction: column
   .main
     margin-top: 150px
     max-width: 45vw
+    @media screen and (max-width: 720px)
+      max-width: 100%
   .button
       width: 100px
       color: $---white-color
@@ -73,11 +73,13 @@ h5
       span
         font-size: 15px
         padding-left: 5px
-.mainImage
-  max-width: 40vw
-  max-height: auto
-  object-fit: scale-down
-  
+  .mainImage
+    max-width: 40vw
+    max-height: auto
+    object-fit: scale-down
+    @media screen and (max-width: 720px)
+      max-width: 100%
+
 
 .subtitleButton
   font-size: 12px
@@ -87,22 +89,6 @@ h5
   padding: $---btn-padding
   margin-bottom: 3rem
 
-.buttonSquareAngle
-  border-radius: $---btn-round-less
-  padding: $---btn-padding
-  color: $---white-color
-  background-color: $---main-blue-color
-  border: none
-  &:hover
-    transition: all 0.2s ease-in-out
-    transform: translate(0, -4px)
-    box-shadow: 0px 0px 12px -2px #686868
-
-
-
-
-
-
 .howToUseContainer
 .heading
   display: block
@@ -111,23 +97,29 @@ h5
   h2
     margin: 1rem
 
-   
 .cardsWrapper 
-    display: grid 
-    grid-template-columns: repeat(3, 2fr)
-    grid-row-gap: 15px 
-    grid-column-gap: 15px 
-  
-
-
-
+  display: grid 
+  grid-template-columns: repeat(3, 2fr)
+  grid-row-gap: 15px 
+  grid-column-gap: 15px 
+  @media screen and (max-width: 1050px)
+    grid-template-columns: 1fr
 .icon
     width: 80px
 .howNamingBox
   display: flex
   justify-content: space-between
+  @media screen and (max-width: 1050px)
+    flex-direction: column
+  .mainImage
+    width: auto
+    max-height: 80vh
+    @media screen and (max-width: 1050px)
+      width: 50vw
+      height: auto
+      margin: auto
 .list
-  padding-left: 3rem
+  padding-left: 3rem    
   .listItem
     position: relative
     padding: 5%
@@ -135,7 +127,6 @@ h5
     align-items: center
     border: $---border-type
     margin: 1rem
-    
     span
       font-size: 50px
       color: $---main-blue-color
@@ -158,11 +149,11 @@ h5
 
 .listItem::after
   position: absolute
-  top: 0
+  top: -20px
   bottom: 0
   right: -100
   left: -3rem
-  height: 110%
+  height: 120%
   border-right: $---border-type
   margin-top: 5rem
   content: ""
@@ -172,15 +163,16 @@ h5
   border-right: none
   content: ""
 
-
 .grid
-  display: grid 
+  display: grid
   grid-template-columns: repeat(3, 2fr)
   grid-row-gap: 15px 
   grid-column-gap: 15px 
   padding-top: 4rem
 .faq
   grid-column: 2/4
+  @media screen and (max-width: 720px)
+    grid-column: 1/4
   .faqBox:not(.faqBox:first-child)
     padding-top: 2rem
     border-top: $---border-type
@@ -189,11 +181,15 @@ h5
     
    
 .navigate
+  @media screen and (max-width: 720px)
+    grid-column: 1/4
   .navigateBox
     padding: 7%
     margin: 0 7%
     background-color: $---main-blue-color
     border-radius: $---rounded-element
+    @media screen and (max-width: 720px)
+      margin: 7% 0
     li
       padding: 5%
       color: $---submenu-color-before-hover
@@ -214,10 +210,11 @@ h5
   h2
     color: #00dffc
     font-weight: 600
+    z-index: 1
   p
     color: $---white-color
-    // font-size: 24px
-    padding: 1rem 0
+    text-align: center
+    padding: 1rem 6rem
     margin: 0
     z-index: 1
   .button
@@ -236,13 +233,13 @@ h5
     right: 0
     bottom: 0
     height: 80%
-    z-index: 0
+    opacity: 50%
   .leafImgLeft
     position: absolute
     left: 0
     top: 0
     height: 80%
-    z-index: 0
+    opacity: 50%
 
 .containerDignity
   display: grid
@@ -271,25 +268,27 @@ h5
     &:last-child::after
       content: none
 
-
-    
-    
 .contactsBlock
-  display: flex
-  align-items: center
+  display: grid 
+  grid-template-columns: repeat(8, 1fr)
+  @media screen and (max-width: 720px)
+    grid-template-columns: 1fr
+
 
 .leftSection
-  width: 80%
   min-height: 450px
-  display: flex
-  flex-direction: column
-  justify-content: space-evenly
+  grid-column: 1/5
   padding: 1rem 2rem
   border-radius: $---rounded-element
   box-shadow: 0px 0px 12px -4px $---content-font-color
-
+  // @media screen and (max-width: 720px)
+  //   width: 100%
+  @media screen and (max-width: 850px)
+    grid-column: 1/9
   .questionText
     display: flex
+    margin-top: 3rem
+
     &:first-of-type
       border-bottom: 1px solid #dee2e6
       padding-bottom: 3%
@@ -315,13 +314,18 @@ h5
         
 
 .rightSection
-  min-height: 400px
-  padding: 3rem 2rem
+  grid-column: 5/9
+  margin: 1rem 0
+  min-height: 350px
+  padding: 4rem
   background-color: $---main-blue-color
   color: $---white-color
   display: flex
   flex-direction: column
   justify-content: center
+  @media screen and (max-width: 850px)
+    grid-column: 1/9
+    margin: 0
   .headerContacts
     color: $---white-color
     font-weight: 600
@@ -346,15 +350,23 @@ h5
 
 
 .brands
-  display: flex
+  display: flex    
+  @media screen and (max-width: 850px)
+    flex-direction: column
   .headingBrands
     padding-top: 3rem
     width: 30%
+    @media screen and (max-width: 850px)
+      padding-bottom: 1rem
   .brandsItems
     border-top: $---border-type
     padding-top: 3rem
     width: 100%
     display: flex
     justify-content: space-evenly
+    a
+      padding: 1rem 0
+    @media screen and (max-width: 850px)
+      flex-direction: column
     img
       height: 100%

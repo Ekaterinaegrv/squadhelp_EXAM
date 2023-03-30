@@ -1,5 +1,4 @@
 import React from 'react';
-///import ScrollableAnchor from 'react-scrollable-anchor'
 import FAQ from '../../constants/FAQConstants';
 import CONSTANTS from '../../constants';
 import styles from './HowItWorks.module.sass';
@@ -11,8 +10,6 @@ import { Link } from 'react-router-dom';
 
 
 const HowItWorks = (props) => {
-
-
 
 return(
 <>
@@ -104,28 +101,25 @@ return(
 
         <nav className={styles.navigate}>
             <ul className={styles.navigateBox}>
-                <li><a href='Launching'>Launching A Contes</a></li>
-                <li><a href="Buying">Buying From Marketplace</a></li>
-                <li><a href="Managed">Managed Contests</a></li>
-                <li><a href="Managed">For Creatives</a></li>
+                <li><a href="#launching">Launching A Contes</a></li>
+                <li><a href="#buying">Buying From Marketplace</a></li>
+                <li><a href="#managed">Managed Contests</a></li>
             </ul>
         </nav>
         
         <main className={styles.faq}>
-            <div className={styles.faqBox}>
+            <div className={styles.faqBox} id='launching'>
                 <h3>Launching A Contest</h3>
                 <Accordion section={FAQ.LAUNCHING_A_CONTEST}/>
             </div>
-            <div className={styles.faqBox}>
+            <div className={styles.faqBox} id='buying'>
                 <h3>Buying From Marketplace</h3>
                 <Accordion section={FAQ.BUYING_FROM_MARKETPLACE}/>
             </div>
-            <div className={styles.faqBox}>
+            <div className={styles.faqBox} id='managed'>
                 <h3 id='Managed'>Managed Contests</h3>
                 <Accordion section={FAQ.BUYING_FROM_MARKETPLACE}/>
-            </div>
-
-                
+            </div>                
                 
         </main>
     </section>
@@ -138,8 +132,7 @@ return(
     
     <h2>Ready to get started?</h2>
     <p className={styles.content}>Fill out your contest brief and begin receiving custom name suggestions within minutes.</p>
-    {/* <button className={styles.button} ref='start-contest'>Start A Contest</button> */}
-    <Link className={styles.button} to="/startContest">Start A Contest</Link>
+    <div className={styles.button}> <span>Play Video</span> </div>
     
     <img className={styles.leafImgRight} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/right-leaf.png`} alt='leaf'/>
     <img className={styles.leafImgLeft} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/left-leaf.png`} alt='leaf'/>
