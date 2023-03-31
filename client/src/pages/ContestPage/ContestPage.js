@@ -16,6 +16,7 @@ import Header from '../../components/Header/Header';
 import ContestSideBar from '../../components/ContestSideBar/ContestSideBar';
 import styles from './ContestPage.module.sass';
 import OfferBox from '../../components/OfferBox/OfferBox';
+import OfferBoxForModerator from '../../components/OfferBox/OfferBox ForModerator';
 import OfferForm from '../../components/OfferForm/OfferForm';
 import CONSTANTS from '../../constants';
 import Brief from '../../components/Brief/Brief';
@@ -39,30 +40,58 @@ class ContestPage extends React.Component {
     };
 
     setOffersList = () => {
+      const { role } = this.props.userStore.data;
       const array = [];
       for (let i = 0; i < this.props.contestByIdStore.offers.length; i++) {
-        array.push(<OfferBox
+        array.push(
+          role === CONSTANTS.MODERATOR ?
+        <OfferBoxForModerator                         
           data={this.props.contestByIdStore.offers[i]}
           key={this.props.contestByIdStore.offers[i].id}
           needButtons={this.needButtons}
           setOfferStatus={this.setOfferStatus}
           contestType={this.props.contestByIdStore.contestData.contestType}
           date={new Date()}
-        />);
+        />
+        :
+        <OfferBox                      
+          data={this.props.contestByIdStore.offers[i]}
+          key={this.props.contestByIdStore.offers[i].id}
+          needButtons={this.needButtons}
+          setOfferStatus={this.setOfferStatus}
+          contestType={this.props.contestByIdStore.contestData.contestType}
+          date={new Date()}
+        />
+        
+        );
       }
       return array.length !== 0 ? array : <div className={styles.notFound}>There is no suggestion at this moment</div>;
     };
 
-    needButtons = (offerStatus) => {
+    needButtons = (offerStatus) => {  
+      const { role } = this.props.userStore.data; 
       const contestCreatorId = this.props.contestByIdStore.contestData.User.id;
       const userId = this.props.userStore.data.id;
       const contestStatus = this.props.contestByIdStore.contestData.status;
-      return (contestCreatorId === userId && contestStatus === CONSTANTS.CONTEST_STATUS_ACTIVE && offerStatus === CONSTANTS.OFFER_STATUS_PENDING);
+
+        if(role === CONSTANTS.CUSTOMER) {
+          return (
+          contestCreatorId === userId && 
+          contestStatus === CONSTANTS.CONTEST_STATUS_ACTIVE && 
+          offerStatus === CONSTANTS.OFFER_STATUS_PENDING
+          ) 
+        } if(role === CONSTANTS.MODERATOR) {
+          return (
+          contestStatus === CONSTANTS.CONTEST_STATUS_ACTIVE && 
+          offerStatus === CONSTANTS.OFFER_STATUS_NEW
+          )
+        }  
+    
     };
 
     setOfferStatus = (creatorId, offerId, command) => {
       this.props.clearSetOfferStatusError();
-      const { id, orderId, priority } = this.props.contestByIdStore.contestData;
+      const { id, orderId, priority, title, User:{email} } = this.props.contestByIdStore.contestData;
       const obj = {
         command,
         offerId,
@@ -70,7 +99,9 @@ class ContestPage extends React.Component {
         orderId,
         priority,
         contestId: id,
-      };
+        email,
+        title
+      };  
       this.props.setOfferStatus(obj);
     };
 
@@ -101,7 +132,7 @@ class ContestPage extends React.Component {
     };
 
     render() {
-      const { role } = this.props.userStore.data;
+      const { role } = this.props.userStore.data; 
       const {
         contestByIdStore,
         changeShowImage,
@@ -120,8 +151,8 @@ class ContestPage extends React.Component {
         setOfferStatusError,
       } = contestByIdStore;
       return (
-        <div>
-          {/* <Chat/> */}
+         
+          <div>
           {isShowOnFull && (
           <LightBox
             mainSrc={`${CONSTANTS.publicURL}${imagePath}`}
@@ -189,6 +220,8 @@ Offer
                 )
             )}
         </div>
+         
+        
       );
     }
 }

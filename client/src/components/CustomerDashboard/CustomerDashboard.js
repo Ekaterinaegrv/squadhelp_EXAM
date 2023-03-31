@@ -37,12 +37,13 @@ class CustomerDashboard extends React.Component {
 
     setContestList = () => {
       const array = [];
-      const { contests } = this.props;
+      const { contests, role } = this.props;
       for (let i = 0; i < contests.length; i++) {
         array.push(<ContestBox
           data={contests[i]}
           key={contests[i].id}
           goToExtended={this.goToExtended}
+          role={role}
         />);
       }
       return array;

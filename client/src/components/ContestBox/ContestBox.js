@@ -22,6 +22,22 @@ const ContestBox = (props) => {
 
   const ucFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
+  const prizeContainer = () => {
+      return (   
+    <div className={styles.prizeContainer}>
+       <div className={styles.guaranteedContainer}>
+         <div>
+           <img src={`${CONSTANTS.STATIC_IMAGES_PATH}smallCheck.png`} alt="check" />
+         </div>
+         <span>Guaranteed prize</span>
+       </div>
+       <div className={styles.prize}>
+         <img src={`${CONSTANTS.STATIC_IMAGES_PATH}diamond.png`} alt="diamond" />
+         <span>{`$${prize}`}</span>
+       </div>
+     </div>
+     )
+  }
   const {
     id, title, contestType, prize, count,
   } = props.data;
@@ -38,18 +54,10 @@ const ContestBox = (props) => {
         <div className={styles.contestType}>
           <span>This is an Invitation Only Contest and is only open to those Creatives who have achieved a Tier A status.</span>
         </div>
-        <div className={styles.prizeContainer}>
-          <div className={styles.guaranteedContainer}>
-            <div>
-              <img src={`${CONSTANTS.STATIC_IMAGES_PATH}smallCheck.png`} alt="check" />
-            </div>
-            <span>Guaranteed prize</span>
-          </div>
-          <div className={styles.prize}>
-            <img src={`${CONSTANTS.STATIC_IMAGES_PATH}diamond.png`} alt="diamond" />
-            <span>{`$${prize}`}</span>
-          </div>
-        </div>
+      {props.role === CONSTANTS.MODERATOR ? <div>Counts of offers: {props.data.Offers.length}</div> : null}
+      
+
+        {props.role === CONSTANTS.MODERATOR ? null : prizeContainer()}
       </div>
       <div className={styles.entryAndTimeContainer}>
         <div className={styles.entriesContainer}>
