@@ -13,13 +13,8 @@ module.exports.dataForContest = async (req, res, next) => {
     const { body: { characteristic1, characteristic2 } } = req;
     console.log(req.body, characteristic1, characteristic2);
     const types = [characteristic1, characteristic2, 'industry'].filter(Boolean);
-<<<<<<< HEAD
 
     const characteristics = await db.Select.findAll({
-=======
-    
-    const characteristics = await db.Selects.findAll({
->>>>>>> fullstack
       where: {
         type: {
           [ db.Sequelize.Op.or ]: types,
@@ -58,64 +53,6 @@ module.exports.getContestById = async (req, res, next) => {
   const offersTypes = [creator, customer, moderator].filter(Boolean);
             
   try {
-<<<<<<< HEAD
-    let contestInfo = await db.Contest.findOne({
-      where: { id: req.headers.contestid },
-      order: [
-        [db.Offer, 'id', 'asc'],
-      ],
-      include: [
-        {
-          model: db.User,
-          required: true,
-          attributes: {
-            exclude: [
-              'password',
-              'role',
-              'balance',
-              'accessToken',
-            ],
-          },
-        },
-        {
-          model: db.Offer,
-          required: false,
-          where: req.tokenData.role === CONSTANTS.CREATOR
-            ? { userId: req.tokenData.userId }
-            : {},
-          attributes: { exclude: ['userId', 'contestId'] },
-          include: [
-            {
-              model: db.User,
-              required: true,
-              attributes: {
-                exclude: [
-                  'password',
-                  'role',
-                  'balance',
-                  'accessToken',
-                ],
-              },
-            },
-            {
-              model: db.Rating,
-              required: false,
-              where: { userId: req.tokenData.userId },
-              attributes: { exclude: ['userId', 'offerId'] },
-            },
-          ],
-        },
-      ],
-    });
-    contestInfo = contestInfo.get({ plain: true });
-    contestInfo.Offers.forEach(offer => {
-      if (offer.Rating) {
-        offer.mark = offer.Rating.mark;
-      }
-      delete offer.Rating;
-    });
-    res.send(contestInfo);
-=======
       let contestInfo = await db.Contests.findOne({
         where: { id: req.headers.contestid },
         order: [
@@ -173,7 +110,6 @@ module.exports.getContestById = async (req, res, next) => {
       res.send(contestInfo);
       
     
->>>>>>> fullstack
   } catch (e) {
     console.log(e)
     next(new ServerError());
@@ -344,13 +280,8 @@ module.exports.setOfferStatus = async (req, res, next) => {
 };
 
 module.exports.getCustomersContests = (req, res, next) => {
-<<<<<<< HEAD
-  db.Contest.findAll({
-    where: { status: req.headers.status, userId: req.tokenData.userId },
-=======
   db.Contests.findAll({
     where: req.tokenData.role === CONSTANTS.MODERATOR ? { status: req.headers.status } : {status: req.headers.status, userId: req.tokenData.userId},
->>>>>>> fullstack
     limit: req.body.limit,
     offset: req.body.offset ? req.body.offset : 0,
     order: [['id', 'DESC']],
