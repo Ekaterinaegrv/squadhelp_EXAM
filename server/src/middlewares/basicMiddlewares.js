@@ -23,12 +23,12 @@ module.exports.canGetContest = async (req, res, next) => {
       });
     }
     if (req.tokenData.role === CONSTANTS.MODERATOR) {
-      result = await bd.Contests.findOne({
+      result = await bd.Contest.findOne({
         where: { id: req.headers.contestid},
       });
     }
     else if (req.tokenData.role === CONSTANTS.CREATOR) {
-      result = await bd.Contests.findOne({
+      result = await bd.Contest.findOne({
         where: {
           id: req.headers.contestid,
           status: {
@@ -89,7 +89,7 @@ module.exports.canSendOffer = async (req, res, next) => {
 module.exports.onlyForCustomerWhoCreateContest = async (req, res, next) => {
   try {
     if (req.tokenData.role === CONSTANTS.MODERATOR) {
-      const result = await bd.Contests.findOne({
+      const result = await bd.Contest.findOne({
         where: {
           id: req.body.contestId,
           status: CONSTANTS.CONTEST_STATUS_ACTIVE,
@@ -99,7 +99,7 @@ module.exports.onlyForCustomerWhoCreateContest = async (req, res, next) => {
         return next(new RightsError());
       }
     } else {
-      const result = await bd.Contests.findOne({
+      const result = await bd.Contest.findOne({
         where: {
           userId: req.tokenData.userId,
           id: req.body.contestId,

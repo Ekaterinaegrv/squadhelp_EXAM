@@ -53,14 +53,14 @@ module.exports.getContestById = async (req, res, next) => {
   const offersTypes = [creator, customer, moderator].filter(Boolean);
             
   try {
-      let contestInfo = await db.Contests.findOne({
+      let contestInfo = await db.Contest.findOne({
         where: { id: req.headers.contestid },
         order: [
-          [db.Offers, 'id', 'asc'],
+          [db.Offer, 'id', 'asc'],
         ],
         include: [
           {
-            model: db.Users,
+            model: db.User,
             required: true,
             attributes: {
               exclude: [
@@ -72,14 +72,14 @@ module.exports.getContestById = async (req, res, next) => {
             },
           },
           {
-            model: db.Offers,
+            model: db.Offer,
             required: false, 
             where: offersTypes, 
 
             attributes: { exclude: ['userId', 'contestId'] },
             include: [
               {
-                model: db.Users,
+                model: db.User,
                 required: true,
                 attributes: {
                   exclude: [
@@ -91,7 +91,7 @@ module.exports.getContestById = async (req, res, next) => {
                 },
               },
               {
-                model: db.Ratings,
+                model: db.Rating,
                 required: false,
                 where: { userId: req.tokenData.userId },
                 attributes: { exclude: ['userId', 'offerId'] },
@@ -280,7 +280,7 @@ module.exports.setOfferStatus = async (req, res, next) => {
 };
 
 module.exports.getCustomersContests = (req, res, next) => {
-  db.Contests.findAll({
+  db.Contest.findAll({
     where: req.tokenData.role === CONSTANTS.MODERATOR ? { status: req.headers.status } : {status: req.headers.status, userId: req.tokenData.userId},
     limit: req.body.limit,
     offset: req.body.offset ? req.body.offset : 0,
