@@ -1,0 +1,22 @@
+$---padding-main: 2vh 5vw 2vh 7vw  
+
+
+.containerPadding
+    display: grid
+    grid-template-columns: repeat(6, 1fr)
+    grid-column-gap: 4vw
+    padding: $---padding-main
+    margin: 10vh 0
+    .formBox
+        grid-column: 1/3
+        @media screen and (max-width: 800px)
+            grid-column: 1/6
+    .todoBox
+        grid-column: 3/6
+        @media screen and (max-width: 800px)
+            grid-column: 1/6
+        p
+            margin: 1rem 0
+        h3
+            margin-top: 2rem
+
