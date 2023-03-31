@@ -20,6 +20,7 @@ import browserHistory from './browserHistory';
 import ChatContainer from './components/Chat/ChatComponents/ChatContainer/ChatContainer';
 import HowItWorks from './pages/HowItWorks/HowItWorks';
 import Events from './pages/Events/Events';
+import ButtonGroup from './components/ButtonGroup/ButtonGroup';
 
 class App extends Component {
   render() {
@@ -43,6 +44,7 @@ class App extends Component {
           <Route exact path="/payment" component={PrivateHoc(Payment)} />
           <Route exact path="/startContest" component={PrivateHoc(StartContestPage)} />
           <Route exact path="/how-it-works" component={HowItWorks} />
+          <Route exact path="/button-component" component={ButtonGroup} />
           
           <Route
             exact
