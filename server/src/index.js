@@ -4,7 +4,9 @@ const cors = require('cors');
 require('./dbMongo/mongoose');
 const router = require('./router');
 const controller = require('./socketInit');
-const handlerError = require('./handlerError/handler');
+const {errorHandler} = require('./handlerError/handler');
+const { writeToFile } = require('./handlerError/logErrors');
+var cron = require('node-cron');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -13,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/public', express.static('public'));
 app.use(router);
-app.use(handlerError);
+app.use(errorHandler);
 
 const server = http.createServer(app);
 server.listen(PORT,
@@ -21,3 +23,6 @@ server.listen(PORT,
 controller.createConnection(server);
 
 
+cron.schedule('0 12 1-31 * *', () => {
+  writeToFile();
+});
