@@ -1,7 +1,3 @@
-const Conversation = require('../models/mongoModels/conversation');
-const Message = require('../models/mongoModels/Message');
-const Catalog = require('../models/mongoModels/Catalog');
-const moment = require('moment');
 const db = require('../models');
 const userQueries = require('./queries/userQueries');
 const controller = require('../socketInit');
@@ -11,42 +7,67 @@ module.exports.addMessage = async (req, res, next) => {
   const participants = [req.tokenData.userId, req.body.recipient];
   participants.sort(
     (participant1, participant2) => participant1 - participant2);
+
   try {
-    const newConversation = await Conversation.findOneAndUpdate({
-      participants,
-    },
-    { participants, blackList: [false, false], favoriteList: [false, false] },
-    {
-      upsert: true,
-      new: true,
-      setDefaultsOnInsert: true,
-      useFindAndModify: false,
+    const participants = [req.tokenData.userId, req.body.recipient];
+    participants.sort((participant1, participant2) => participant1 - participant2);
+    let newConversation;
+    let createMessage;
+    newConversation = await db.Conversation.findOne({
+      where: {
+        participant1:participants[0], 
+        participant2:participants[1] 
+      }
     });
-    const message = new Message({
-      sender: req.tokenData.userId,
-      body: req.body.messageBody,
-      conversation: newConversation._id,
-    });
-    await message.save();
-    message._doc.participants = participants;
-    const interlocutorId = participants.filter(
+    if(newConversation) { 
+      createMessage = await db.Message.create({
+        sender: req.tokenData.userId,
+        body: req.body.messageBody,
+        conversation: newConversation.id
+    })
+    } else {
+      newConversation = await db.Conversation.create( { 
+        participant1:participants[0], 
+        participant2:participants[1]    
+      } );
+      createMessage = await db.Message.create({
+        sender: req.tokenData.userId,
+        body: req.body.messageBody,
+        conversation: newConversation.id
+        })
+    }  
+    createMessage.participants = participants;
+
+     const interlocutorId = participants.filter(
       (participant) => participant !== req.tokenData.userId)[ 0 ];
+ 
     const preview = {
-      _id: newConversation._id,
+      _id: newConversation.id,
       sender: req.tokenData.userId,
       text: req.body.messageBody,
-      createAt: message.createdAt,
+      // createAt: message.createdAt,
       participants,
       blackList: newConversation.blackList,
       favoriteList: newConversation.favoriteList,
     };
+    console.log('createMessage');
+    const message = {};
+    message._id = createMessage.id;
+    message.sender = createMessage.sender;
+    message.body = createMessage.body;
+    message.conversation = createMessage.id;
+    message.createdAt = createMessage.createdAt;
+    message.updatedAt = createMessage.updatedAt;
+    message.participants = createMessage.participants;
+
+
     controller.getChatController().emitNewMessage(interlocutorId, {
       message,
       preview: {
-        _id: newConversation._id,
+        _id: newConversation.id,
         sender: req.tokenData.userId,
         text: req.body.messageBody,
-        createAt: message.createdAt,
+        // createAt: message.createdAt,
         participants,
         blackList: newConversation.blackList,
         favoriteList: newConversation.favoriteList,
@@ -73,29 +94,29 @@ module.exports.getChat = async (req, res, next) => {
   const participants = [req.tokenData.userId, req.body.interlocutorId];
   participants.sort(
     (participant1, participant2) => participant1 - participant2);
+    let conversationsMessage;
   try {
-    const messages = await Message.aggregate([
-      {
-        $lookup: {
-          from: 'conversations',
-          localField: 'conversation',
-          foreignField: '_id',
-          as: 'conversationData',
-        },
-      },
-      { $match: { 'conversationData.participants': participants } },
-      { $sort: { createdAt: 1 } },
-      {
-        $project: {
-          '_id': 1,
-          'sender': 1,
-          'body': 1,
-          'conversation': 1,
-          'createdAt': 1,
-          'updatedAt': 1,
-        },
-      },
-    ]);
+    conversationsMessage = await db.Conversation.findOne({
+      where: {
+        participant1:participants[0], 
+        participant2:participants[1] 
+      }
+    });
+    if(!conversationsMessage) {
+      conversationsMessage = await db.Conversation.create( { 
+        participant1:participants[0], 
+        participant2:participants[1]    
+      } );
+    }
+    const messageArray = await db.Message.findAll({
+      //order: [['createdAt', 'ASC']],
+    where: {
+      conversation: conversationsMessage.dataValues.id
+    }
+  })
+    
+    const messages = [];
+    messageArray.map(message => messages.push(message.dataValues));
 
     const interlocutor = await userQueries.findUser(
       { id: req.body.interlocutorId });
@@ -114,79 +135,106 @@ module.exports.getChat = async (req, res, next) => {
   }
 };
 
-module.exports.getPreview = async (req, res, next) => {
+module.exports.getPreview = async (req, res, next) => { 
   try {
-    const conversations = await Message.aggregate([
-      {
-        $lookup: {
-          from: 'conversations',
-          localField: 'conversation',
-          foreignField: '_id',
-          as: 'conversationData',
-        },
-      },
-      {
-        $unwind: '$conversationData',
-      },
-      {
-        $match: {
-          'conversationData.participants': req.tokenData.userId,
-        },
-      },
-      {
-        $sort: {
-          createdAt: -1,
-        },
-      },
-      {
-        $group: {
-          _id: '$conversationData._id',
-          sender: { $first: '$sender' },
-          text: { $first: '$body' },
-          createAt: { $first: '$createdAt' },
-          participants: { $first: '$conversationData.participants' },
-          blackList: { $first: '$conversationData.blackList' },
-          favoriteList: { $first: '$conversationData.favoriteList' },
-        },
-      },
-    ]);
-    const interlocutors = [];
-    conversations.forEach(conversation => {
-      interlocutors.push(conversation.participants.find(
-        (participant) => participant !== req.tokenData.userId));
-    });
-    const senders = await db.User.findAll({
+    const conversationsArray = await db.Conversation.findAll({
       where: {
-        id: interlocutors,
+        [db.Sequelize.Op.or]: [
+          { participant1: req.tokenData.userId },
+          { participant2: req.tokenData.userId }
+        ]
       },
-      attributes: ['id', 'firstName', 'lastName', 'displayName', 'avatar'],
+      include: [
+        {
+          model: db.Message,
+          // order: [['createdAt', 'DESC']], 
+          limit: 1,
+          offset: 0
+        },
+      ],
     });
-    conversations.forEach((conversation) => {
-      senders.forEach(sender => {
-        if (conversation.participants.includes(sender.dataValues.id)) {
-          conversation.interlocutor = {
-            id: sender.dataValues.id,
-            firstName: sender.dataValues.firstName,
-            lastName: sender.dataValues.lastName,
-            displayName: sender.dataValues.displayName,
-            avatar: sender.dataValues.avatar,
-          };
-        }
+    if(conversationsArray){ 
+      let conversations = [];
+
+      for (let i = 0; i < conversationsArray.length; i++) {
+        let newObj = {};
+  
+        newObj._id = conversationsArray[i].dataValues.id;
+        newObj.sender = conversationsArray[i].dataValues.Messages[0].dataValues.sender;
+        newObj.text = conversationsArray[i].dataValues.Messages[0].dataValues.body;
+        newObj.createAt = conversationsArray[i].dataValues.Messages[0].dataValues.createdAt;
+        newObj.participants = [conversationsArray[i].dataValues.participant1, conversationsArray[i].dataValues.participant2];
+        newObj.blackList = conversationsArray[i].dataValues.blackList;
+        newObj.favoriteList = conversationsArray[i].dataValues.favoriteList;
+        
+        conversations.push(newObj);
+      }
+  
+      const interlocutors = [];
+  
+      conversations.forEach(conversation => {
+        interlocutors.push(conversation.participants.find(
+          (participant) => participant !== req.tokenData.userId));
       });
-    });
-    res.send(conversations);
+      const senders = await db.User.findAll({
+        where: {
+          id: interlocutors,
+        },
+        attributes: ['id', 'firstName', 'lastName', 'displayName', 'avatar'],
+      });
+   
+      conversations.forEach((conversation) => {
+        senders.forEach(sender => {
+          if (conversation.participants.includes(sender.dataValues.id)) {
+            conversation.interlocutor = {
+              id: sender.dataValues.id,
+              firstName: sender.dataValues.firstName,
+              lastName: sender.dataValues.lastName,
+              displayName: sender.dataValues.displayName,
+              avatar: sender.dataValues.avatar,
+            };
+          }
+        });
+      });
+      res.send(conversations);
+    }
   } catch (err) {
     next(err);
   }
 };
 
 module.exports.blackList = async (req, res, next) => {
-  const predicate = 'blackList.' +
-    req.body.participants.indexOf(req.tokenData.userId);
+  const indexOfUser = req.body.participants.indexOf(req.tokenData.userId);
+
   try {
-    const chat = await Conversation.findOneAndUpdate(
-      { participants: req.body.participants },
-      { $set: { [ predicate ]: req.body.blackListFlag } }, { new: true });
+    const conversation = await db.Conversation.findOne({
+      where: {
+        participant1: req.body.participants[0],
+        participant2: req.body.participants[1]
+      }
+    })
+    let blackListNew = conversation.blackList;
+    blackListNew[indexOfUser] = req.body.blackListFlag;
+    const updatedChat = await db.Conversation.update({ 
+      blackList: blackListNew 
+    },{ 
+      where: { 
+        id: conversation.id, 
+      } , 
+      returning: true
+    });     
+      
+    const updatedChatPath = updatedChat.flat()[1].dataValues
+    const chat = {};
+    chat.participants = req.body.participants;
+    chat.blackList = updatedChatPath.blackList;
+    chat.favoriteList =  updatedChatPath.favoriteList;
+    chat._id = updatedChatPath.id;
+    // chat.createdAt = updatedChatPath.createdAt;
+    // chat.updatedAt = updatedChatPath.updatedAt;
+    console.log('chat');
+    console.log(chat);
+  
     res.send(chat);
     const interlocutorId = req.body.participants.filter(
       (participant) => participant !== req.tokenData.userId)[ 0 ];
@@ -197,27 +245,72 @@ module.exports.blackList = async (req, res, next) => {
 };
 
 module.exports.favoriteChat = async (req, res, next) => {
-  const predicate = 'favoriteList.' +
-    req.body.participants.indexOf(req.tokenData.userId);
+  const indexOfUser = req.body.participants.indexOf(req.tokenData.userId);
+
   try {
-    const chat = await Conversation.findOneAndUpdate(
-      { participants: req.body.participants },
-      { $set: { [ predicate ]: req.body.favoriteFlag } }, { new: true });
+    const conversation = await db.Conversation.findOne({
+      where: {
+        participant1: req.body.participants[0],
+        participant2: req.body.participants[1]
+      }
+    })
+    let favoriteListNew = conversation.favoriteList;
+    favoriteListNew[indexOfUser] = req.body.favoriteFlag;
+    const updatedChat = await db.Conversation.update({ 
+      favoriteList: favoriteListNew 
+    },{ 
+      where: { 
+        id: conversation.id, 
+      } , 
+      returning: true
+    });     
+      
+    const updatedChatPath = updatedChat.flat()[1].dataValues
+    const chat = {};
+    chat.participants = req.body.participants;
+    chat.blackList = updatedChatPath.blackList;
+    chat.favoriteList =  updatedChatPath.favoriteList;
+    chat._id = updatedChatPath.id;
+    // chat.createdAt = updatedChatPath.createdAt;
+    // chat.updatedAt = updatedChatPath.updatedAt; 
     res.send(chat);
+    const interlocutorId = req.body.participants.filter(
+      (participant) => participant !== req.tokenData.userId)[ 0 ];
+    controller.getChatController().emitChangeBlockStatus(interlocutorId, chat);
+  
   } catch (err) {
     res.send(err);
   }
 };
 
-module.exports.createCatalog = async (req, res, next) => {
-  console.log(req.body);
-  const catalog = new Catalog({
-    userId: req.tokenData.userId,
-    catalogName: req.body.catalogName,
-    chats: [req.body.chatId],
-  });
+module.exports.createCatalog = async (req, res, next) => {  
   try {
-    await catalog.save();
+    const createCatalog = await db.Catalog.create({
+      userId: req.tokenData.userId,
+      catalogName: req.body.catalogName
+    });
+
+    const conversations =  await db.Conversation.findByPk(req.body.chatId);
+    await createCatalog.addConversations(conversations);
+    const findCatalog = await db.Catalog.findOne( { 
+      where: { 
+        id: createCatalog.id
+     },
+     include: [
+      {
+        model: db.Conversation,
+      },
+    ],
+    });  
+
+    let catalog = {};
+    catalog.chats = [];
+      for (let i = 0; i < findCatalog.Conversations.length; i++) {
+          catalog.chats.push(findCatalog.Conversations[i].dataValues.id);
+          catalog._id = findCatalog.dataValues.id;
+          catalog.userId = findCatalog.dataValues.userId;
+          catalog.catalogName = findCatalog.dataValues.catalogName;
+      }
     res.send(catalog);
   } catch (err) {
     next(err);
@@ -226,10 +319,36 @@ module.exports.createCatalog = async (req, res, next) => {
 
 module.exports.updateNameCatalog = async (req, res, next) => {
   try {
-    const catalog = await Catalog.findOneAndUpdate({
-      _id: req.body.catalogId,
-      userId: req.tokenData.userId,
-    }, { catalogName: req.body.catalogName }, { new: true });
+      const updatedCatalog = await db.Catalog.update({ 
+      catalogName: req.body.catalogName 
+    },{ 
+      where: { 
+        id: req.body.catalogId,
+        userId: req.tokenData.userId,
+      },
+      returning: true
+    });   
+    
+    const findCatalog = await db.Catalog.findOne({
+      where: { 
+        id: req.body.catalogId,
+        userId: req.tokenData.userId,
+      },
+      include: [
+        {
+          model: db.Conversation,
+        },
+      ]
+    })
+
+ let catalog = {};
+    catalog.chats = [];
+      for (let i = 0; i < findCatalog.Conversations.length; i++) {
+          catalog.chats.push(findCatalog.Conversations[i].dataValues.id);
+          catalog._id = findCatalog.dataValues.id;
+          catalog.userId = findCatalog.dataValues.userId;
+          catalog.catalogName = findCatalog.dataValues.catalogName;
+      }
     res.send(catalog);
   } catch (err) {
     next(err);
@@ -238,10 +357,45 @@ module.exports.updateNameCatalog = async (req, res, next) => {
 
 module.exports.addNewChatToCatalog = async (req, res, next) => {
   try {
-    const catalog = await Catalog.findOneAndUpdate({
-      _id: req.body.catalogId,
-      userId: req.tokenData.userId,
-    }, { $addToSet: { chats: req.body.chatId } }, { new: true });
+    console.log('addNewChatToCatalog');
+
+    const updatedCatalog = await db.Catalog.findOne({
+      where: {
+        id: req.body.catalogId,
+        userId: req.tokenData.userId
+      }
+    });
+    const conversation = await db.Conversation.findOne({
+      where: {
+        id: req.body.chatId 
+      }
+    })
+    const addconversation = await updatedCatalog.addConversations(conversation);
+    console.log(addconversation);
+
+    const findCatalog = await db.Catalog.findOne({
+      where: { 
+        id: req.body.catalogId,
+        userId: req.tokenData.userId,
+      },
+      include: [
+        {
+          model: db.Conversation,
+        },
+      ]
+    });
+    console.log('findCatalog');
+    console.log(findCatalog);
+    let catalog = {};
+    catalog.chats = [];
+      for (let i = 0; i < findCatalog.Conversations.length; i++) {
+          catalog.chats.push(findCatalog.Conversations[i].dataValues.id);
+          catalog._id = findCatalog.dataValues.id;
+          catalog.userId = findCatalog.dataValues.userId;
+          catalog.catalogName = findCatalog.dataValues.catalogName;
+      }
+      console.log('catalog');
+      console.log(catalog);
     res.send(catalog);
   } catch (err) {
     next(err);
@@ -250,39 +404,120 @@ module.exports.addNewChatToCatalog = async (req, res, next) => {
 
 module.exports.removeChatFromCatalog = async (req, res, next) => {
   try {
-    const catalog = await Catalog.findOneAndUpdate({
-      _id: req.body.catalogId,
-      userId: req.tokenData.userId,
-    }, { $pull: { chats: req.body.chatId } }, { new: true });
-    res.send(catalog);
+    const chatForDelete = await db.Conversation.findOne( { 
+      where: { 
+        id: req.body.chatId
+     }
+    });  
+    const catalogForDelete = await db.Catalog.findOne( { 
+      where: { 
+        id: req.body.catalogId
+     }
+    });  
+ 
+    await catalogForDelete.removeConversation(chatForDelete);
+
+    const catalogNow = await db.Catalog.findOne( { 
+      where: { 
+        id: req.body.catalogId
+     },
+     include: [
+      {
+        model: db.Conversation,
+      },
+    ],
+    });  
+    
+    let catalog = {};
+    catalog.chats = [];
+    
+      for (let i = 0; i < catalogNow.Conversations.length; i++) {
+          catalog.chats.push(catalogNow.Conversations[i].dataValues.id);
+          catalog._id = catalogNow.dataValues.id;
+          catalog.userId = catalogNow.dataValues.userId;
+          catalog.catalogName = catalogNow.dataValues.catalogName;
+      
+      }
+      
+  res.send(catalog);
+
   } catch (err) {
     next(err);
   }
 };
 
 module.exports.deleteCatalog = async (req, res, next) => {
-  try {
-    await Catalog.remove(
-      { _id: req.body.catalogId, userId: req.tokenData.userId });
-    res.end();
-  } catch (err) {
-    next(err);
+try {
+  console.log('deleteCatalog');
+
+  const deleteCatalog = await db.Catalog.findOne({
+    where: {
+      id: req.body.catalogId, 
+      userId: req.tokenData.userId 
+    }
+  });
+
+  await deleteCatalog.destroy();
+
+
+  const catalogs = await db.Catalog.findAll({
+    where: {
+      userId: req.tokenData.userId 
+    },
+    include: [
+      {
+        model: db.Conversation,
+      }
+    ],
+  });
+  let catalog = [];
+
+  for (let i = 0; i < catalogs.length; i++) {
+    let newObj = {};
+    newObj.chats = [];
+    for (let j = 0; j < catalogs[i].dataValues.Conversations.length; j++) {
+      newObj._id = catalogs[i].dataValues.id;
+      newObj.catalogName = catalogs[i].dataValues.catalogName;
+      newObj.chats.push(catalogs[i].dataValues.Conversations[j].dataValues.id)
+    }
+    catalog.push(newObj);
   }
+  
+  res.send(catalog);
+
+} catch (err) {
+  next(err);
+}
 };
 
 module.exports.getCatalogs = async (req, res, next) => {
   try {
-    const catalogs = await Catalog.aggregate([
-      { $match: { userId: req.tokenData.userId } },
-      {
-        $project: {
-          _id: 1,
-          catalogName: 1,
-          chats: 1,
-        },
+    console.log('!!! getCatalogs')
+    const catalogs = await db.Catalog.findAll({
+      where: {
+        userId: req.tokenData.userId
       },
-    ]);
-    res.send(catalogs);
+      include: [
+        {
+          model: db.Conversation,
+          //order: [['createdAt']] 
+        },
+      ],
+    });
+
+    let conversations = [];
+
+    for (let i = 0; i < catalogs.length; i++) {
+      let newObj = {};
+      newObj.chats = [];
+      for (let j = 0; j < catalogs[i].dataValues.Conversations.length; j++) {
+        newObj._id = catalogs[i].dataValues.id;
+        newObj.catalogName = catalogs[i].dataValues.catalogName;
+        newObj.chats.push(catalogs[i].dataValues.Conversations[j].dataValues.id)
+      }
+     conversations.push(newObj);
+    }
+    res.send(conversations);
   } catch (err) {
     next(err);
   }
