@@ -283,7 +283,53 @@ module.exports.favoriteChat = async (req, res, next) => {
   }
 };
 
-module.exports.createCatalog = async (req, res, next) => {  
+const getCatalog = (catalogs) => {
+  console.log('!!!!! createCatalog !!!!!!')
+  console.log(catalogs);
+  console.log(catalogs.Conversations);
+
+  let catalog = {};
+  catalog.chats = []; 
+  if(catalogs.Conversations.length === 0){
+    catalog._id = catalogs.dataValues.id;
+    catalog.userId = catalogs.dataValues.userId;
+    catalog.catalogName = catalogs.dataValues.catalogName;
+
+  } else {
+  for (let i = 0; i < catalogs.Conversations.length; i++) {
+      catalog._id = catalogs.dataValues.id;
+      catalog.userId = catalogs.dataValues.userId;
+      catalog.catalogName = catalogs.dataValues.catalogName;
+      catalog.chats.push(catalogs.Conversations[i].dataValues.id);
+  }
+  }
+    return catalog; 
+};
+
+
+const getCatalogsList = (catalogs) => {
+  console.log(catalogs)
+  let conversations = [];
+    for (let i = 0; i < catalogs.length; i++) {
+      let newObj = {};
+      newObj.chats = [];
+      if(catalogs[i].Conversations.length === 0){
+          newObj._id = catalogs[i].dataValues.id;
+          newObj.catalogName = catalogs[i].dataValues.catalogName;
+      } else {
+        for (let j = 0; j < catalogs[i].dataValues.Conversations.length; j++) {
+          newObj._id = catalogs[i].dataValues.id;
+          newObj.catalogName = catalogs[i].dataValues.catalogName;
+          newObj.chats.push(catalogs[i].dataValues.Conversations[j].dataValues.id) 
+        }
+      }
+     conversations.push(newObj);
+    }
+    return conversations; 
+};
+module.exports.createCatalog = async (req, res, next) => { 
+  console.log('createCatalog');
+ 
   try {
     const createCatalog = await db.Catalog.create({
       userId: req.tokenData.userId,
@@ -291,8 +337,13 @@ module.exports.createCatalog = async (req, res, next) => {
     });
 
     const conversations =  await db.Conversation.findByPk(req.body.chatId);
-    await createCatalog.addConversations(conversations);
-    const findCatalog = await db.Catalog.findOne( { 
+    console.log('conversations');
+    console.log(conversations);
+    const c = await createCatalog.addConversations(conversations);
+    console.log('c');
+    console.log(c);
+
+    const catalogs = await db.Catalog.findOne( { 
       where: { 
         id: createCatalog.id
      },
@@ -300,17 +351,9 @@ module.exports.createCatalog = async (req, res, next) => {
       {
         model: db.Conversation,
       },
-    ],
+    ]
     });  
-
-    let catalog = {};
-    catalog.chats = [];
-      for (let i = 0; i < findCatalog.Conversations.length; i++) {
-          catalog.chats.push(findCatalog.Conversations[i].dataValues.id);
-          catalog._id = findCatalog.dataValues.id;
-          catalog.userId = findCatalog.dataValues.userId;
-          catalog.catalogName = findCatalog.dataValues.catalogName;
-      }
+    const catalog = getCatalog(catalogs); 
     res.send(catalog);
   } catch (err) {
     next(err);
@@ -329,7 +372,7 @@ module.exports.updateNameCatalog = async (req, res, next) => {
       returning: true
     });   
     
-    const findCatalog = await db.Catalog.findOne({
+    const catalogs = await db.Catalog.findOne({
       where: { 
         id: req.body.catalogId,
         userId: req.tokenData.userId,
@@ -340,15 +383,8 @@ module.exports.updateNameCatalog = async (req, res, next) => {
         },
       ]
     })
+    const catalog = getCatalog(catalogs);
 
- let catalog = {};
-    catalog.chats = [];
-      for (let i = 0; i < findCatalog.Conversations.length; i++) {
-          catalog.chats.push(findCatalog.Conversations[i].dataValues.id);
-          catalog._id = findCatalog.dataValues.id;
-          catalog.userId = findCatalog.dataValues.userId;
-          catalog.catalogName = findCatalog.dataValues.catalogName;
-      }
     res.send(catalog);
   } catch (err) {
     next(err);
@@ -373,7 +409,7 @@ module.exports.addNewChatToCatalog = async (req, res, next) => {
     const addconversation = await updatedCatalog.addConversations(conversation);
     console.log(addconversation);
 
-    const findCatalog = await db.Catalog.findOne({
+    const catalogs = await db.Catalog.findOne({
       where: { 
         id: req.body.catalogId,
         userId: req.tokenData.userId,
@@ -384,18 +420,8 @@ module.exports.addNewChatToCatalog = async (req, res, next) => {
         },
       ]
     });
-    console.log('findCatalog');
-    console.log(findCatalog);
-    let catalog = {};
-    catalog.chats = [];
-      for (let i = 0; i < findCatalog.Conversations.length; i++) {
-          catalog.chats.push(findCatalog.Conversations[i].dataValues.id);
-          catalog._id = findCatalog.dataValues.id;
-          catalog.userId = findCatalog.dataValues.userId;
-          catalog.catalogName = findCatalog.dataValues.catalogName;
-      }
-      console.log('catalog');
-      console.log(catalog);
+
+    const catalog = getCatalog(catalogs);
     res.send(catalog);
   } catch (err) {
     next(err);
@@ -403,6 +429,7 @@ module.exports.addNewChatToCatalog = async (req, res, next) => {
 };
 
 module.exports.removeChatFromCatalog = async (req, res, next) => {
+  console.log('removeChatFromCatalog');
   try {
     const chatForDelete = await db.Conversation.findOne( { 
       where: { 
@@ -417,7 +444,7 @@ module.exports.removeChatFromCatalog = async (req, res, next) => {
  
     await catalogForDelete.removeConversation(chatForDelete);
 
-    const catalogNow = await db.Catalog.findOne( { 
+    const catalogs = await db.Catalog.findOne( { 
       where: { 
         id: req.body.catalogId
      },
@@ -428,18 +455,9 @@ module.exports.removeChatFromCatalog = async (req, res, next) => {
     ],
     });  
     
-    let catalog = {};
-    catalog.chats = [];
-    
-      for (let i = 0; i < catalogNow.Conversations.length; i++) {
-          catalog.chats.push(catalogNow.Conversations[i].dataValues.id);
-          catalog._id = catalogNow.dataValues.id;
-          catalog.userId = catalogNow.dataValues.userId;
-          catalog.catalogName = catalogNow.dataValues.catalogName;
-      
-      }
-      
-  res.send(catalog);
+    const catalog = getCatalog(catalogs);
+  
+    res.send(catalog);
 
   } catch (err) {
     next(err);
@@ -448,8 +466,6 @@ module.exports.removeChatFromCatalog = async (req, res, next) => {
 
 module.exports.deleteCatalog = async (req, res, next) => {
 try {
-  console.log('deleteCatalog');
-
   const deleteCatalog = await db.Catalog.findOne({
     where: {
       id: req.body.catalogId, 
@@ -458,7 +474,6 @@ try {
   });
 
   await deleteCatalog.destroy();
-
 
   const catalogs = await db.Catalog.findAll({
     where: {
@@ -470,20 +485,9 @@ try {
       }
     ],
   });
-  let catalog = [];
 
-  for (let i = 0; i < catalogs.length; i++) {
-    let newObj = {};
-    newObj.chats = [];
-    for (let j = 0; j < catalogs[i].dataValues.Conversations.length; j++) {
-      newObj._id = catalogs[i].dataValues.id;
-      newObj.catalogName = catalogs[i].dataValues.catalogName;
-      newObj.chats.push(catalogs[i].dataValues.Conversations[j].dataValues.id)
-    }
-    catalog.push(newObj);
-  }
-  
-  res.send(catalog);
+  const conversations = getCatalogsList(catalogs);
+  res.send(conversations);
 
 } catch (err) {
   next(err);
@@ -504,19 +508,7 @@ module.exports.getCatalogs = async (req, res, next) => {
         },
       ],
     });
-
-    let conversations = [];
-
-    for (let i = 0; i < catalogs.length; i++) {
-      let newObj = {};
-      newObj.chats = [];
-      for (let j = 0; j < catalogs[i].dataValues.Conversations.length; j++) {
-        newObj._id = catalogs[i].dataValues.id;
-        newObj.catalogName = catalogs[i].dataValues.catalogName;
-        newObj.chats.push(catalogs[i].dataValues.Conversations[j].dataValues.id)
-      }
-     conversations.push(newObj);
-    }
+    const conversations = getCatalogsList(catalogs);
     res.send(conversations);
   } catch (err) {
     next(err);
