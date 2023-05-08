@@ -6,7 +6,12 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Offer, { foreignKey: 'userId', targetKey: 'id' });
       User.hasMany(models.Rating,  { foreignKey: 'userId', targetKey: 'id' });
       User.hasMany(models.Contest, { foreignKey: 'userId', targetKey: 'id' });
-    }
+      User.hasMany(models.Catalog, { foreignKey: 'userId', targetKey: 'id' });
+      User.hasMany(models.Message, { foreignKey: 'sender', targetKey: 'id' });
+      User.hasMany(models.Conversation, { foreignKey: 'participant1', targetKey: 'id' });
+      User.hasMany(models.Conversation, { foreignKey: 'participant2', targetKey: 'id' });
+  
+   }
   }
 
   User.init({
@@ -43,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'anon.png',
       },
       role: {
-        type: DataTypes.ENUM('customer', 'creator'),
+        type: DataTypes.STRING,
         allowNull: false,
       },
       balance: {

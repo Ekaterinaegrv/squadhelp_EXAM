@@ -4,13 +4,9 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Catalog extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Catalog.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
+      Catalog.belongsToMany(models.Conversation, { through: 'conversations_to_catalogs', foreignKey: 'catalog_id' });
     }
   };
   Catalog.init({
@@ -20,9 +16,6 @@ module.exports = (sequelize, DataTypes) => {
     catalogName: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    chats: {
-      type: DataTypes.INTEGER
     }
   }, {
     sequelize,

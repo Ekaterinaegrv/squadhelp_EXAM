@@ -6,29 +6,8 @@ module.exports = (sequelize, DataTypes) => {
   class Message extends Model {
 
     static associate(models) {
-      /*
-      User.hasMany(models.Task, { --> belongsTo {}
-        foreignKey: 'userId'
-      });
-      User.belongsToMany(models.Group, { --> belongsToMany
-        through: 'users_to_groups',
-        foreignKey: 'userId'
-      });
-      Task.belongsTo(models.User, {
-        foreignKey: 'userId'
-      });
-      references: {
-        model: 'User',
-        key: 'id'
-      }
-      
-      */
-
-
-      Message.belongsToMany(models.User, {
-        through: 'messages_to_users',
-        foreingKey: 'sender'
-      });
+      Message.belongsTo(models.Conversation, { foreignKey: 'conversation', sourceKey: 'id' });   
+      Message.belongsTo(models.User, { foreignKey: 'sender', sourceKey: 'id' });   
     }
   };
   Message.init({
@@ -43,11 +22,16 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
         notNull: true
       }
+    },
+    conversation: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     }
   }, {
     sequelize,
     modelName: 'Message',
-    tableName: 'messages'
-  });
+    tableName: 'Messages',
+    timestamps: false
+    });
   return Message;
 };

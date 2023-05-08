@@ -11,15 +11,18 @@ module.exports = {
       userId: {
         field: 'user_id',
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       },
       catalogName: {
         field: 'catalog_name',
         type: Sequelize.STRING,
         allowNull: false
-      },
-      chats: {
-        type: Sequelize.INTEGER
       },
       createdAt: {
         field: 'created_at',

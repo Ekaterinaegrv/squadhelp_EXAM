@@ -4,32 +4,50 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Conversation extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  
     static associate(models) {
-      // define association here
+      Conversation.hasMany(models.Message, { foreignKey: 'conversation', sourceKey: 'id' });   
+      Conversation.belongsToMany(models.Catalog, { through: 'conversations_to_catalogs', foreignKey: 'conversation_id' });
+      Conversation.belongsTo(models.User, { foreignKey: 'participant1', sourceKey: 'id' });
+      Conversation.belongsTo(models.User, { foreignKey: 'participant2', sourceKey: 'id' });
     }
   };
   Conversation.init({
-    participants: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
-      allowNull: false
+    participant1: {
+      field: 'participant_1',
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
+    },
+    participant2: {
+      field: 'participant_2',
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
     },
     blackList: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
+      field: 'black_list',
+      allowNull: false,
+      type: DataTypes.ARRAY(DataTypes.BOOLEAN),
+      defaultValue: [false, false]
     },
     favoriteList: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
-    }
+      field: 'favorite_list',
+      allowNull: false,
+      type: DataTypes.ARRAY(DataTypes.BOOLEAN),
+      defaultValue: [false, false]
+    },
   }, {
     sequelize,
     modelName: 'Conversation',
-    tableName: 'conversations'
+    tableName: 'Conversations',
+    timestamps: false
   });
   return Conversation;
 };
