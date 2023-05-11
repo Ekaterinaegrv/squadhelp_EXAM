@@ -45,16 +45,16 @@ module.exports = {
         type: Sequelize.ARRAY(BOOLEAN),
         defaultValue: [false, false]
       },
-      // createdAt: {
-      //   field: 'created_at',
-      //   type: Sequelize.DATE,
-      //   defaultValue: Sequelize.NOW
-      // },
-      // updatedAt: {
-      //   field: 'updated_at',
-      //   type: Sequelize.DATE,
-      //   defaultValue: Sequelize.NOW
-      // }
+      createdAt: {
+        field: 'created_at',
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        field: 'updated_at',
+        allowNull: false,
+        type: Sequelize.DATE
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

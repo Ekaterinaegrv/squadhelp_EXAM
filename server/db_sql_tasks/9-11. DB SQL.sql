@@ -29,7 +29,7 @@ AND extract ('month' from c."createdAt") = 1);
 --з найвищим рейтингом по 10$ на їхні рахунки.
 
 UPDATE "Users"  
-SET balance = balance + 2
+SET balance = balance + 10
 WHERE rating IN (
   SELECT rating
   FROM "Users"

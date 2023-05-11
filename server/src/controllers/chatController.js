@@ -45,12 +45,11 @@ module.exports.addMessage = async (req, res, next) => {
       _id: newConversation.id,
       sender: req.tokenData.userId,
       text: req.body.messageBody,
-      // createAt: message.createdAt,
+      createAt: createMessage.createdAt,
       participants,
       blackList: newConversation.blackList,
       favoriteList: newConversation.favoriteList,
     };
-    console.log('createMessage');
     const message = {};
     message._id = createMessage.id;
     message.sender = createMessage.sender;
@@ -67,7 +66,7 @@ module.exports.addMessage = async (req, res, next) => {
         _id: newConversation.id,
         sender: req.tokenData.userId,
         text: req.body.messageBody,
-        // createAt: message.createdAt,
+        createAt: message.createdAt,
         participants,
         blackList: newConversation.blackList,
         favoriteList: newConversation.favoriteList,
@@ -109,12 +108,11 @@ module.exports.getChat = async (req, res, next) => {
       } );
     }
     const messageArray = await db.Message.findAll({
-      //order: [['createdAt', 'ASC']],
+      order: [['createdAt', 'ASC']],
     where: {
       conversation: conversationsMessage.dataValues.id
     }
-  })
-    
+  })    
     const messages = [];
     messageArray.map(message => messages.push(message.dataValues));
 
@@ -147,29 +145,31 @@ module.exports.getPreview = async (req, res, next) => {
       include: [
         {
           model: db.Message,
-          // order: [['createdAt', 'DESC']], 
+          required: true,
+          order: [['createdAt', 'DESC']], 
           limit: 1,
           offset: 0
         },
       ],
     });
-    if(conversationsArray){ 
+
+    if(conversationsArray.length !== 0){ 
       let conversations = [];
 
       for (let i = 0; i < conversationsArray.length; i++) {
-        let newObj = {};
-  
-        newObj._id = conversationsArray[i].dataValues.id;
-        newObj.sender = conversationsArray[i].dataValues.Messages[0].dataValues.sender;
-        newObj.text = conversationsArray[i].dataValues.Messages[0].dataValues.body;
-        newObj.createAt = conversationsArray[i].dataValues.Messages[0].dataValues.createdAt;
-        newObj.participants = [conversationsArray[i].dataValues.participant1, conversationsArray[i].dataValues.participant2];
-        newObj.blackList = conversationsArray[i].dataValues.blackList;
-        newObj.favoriteList = conversationsArray[i].dataValues.favoriteList;
+        if(conversationsArray[i].dataValues.Messages.length > 0) {
+          let newObj = {};
+          newObj._id = conversationsArray[i].dataValues.id;
+          newObj.sender = conversationsArray[i].dataValues.Messages[0].dataValues.sender;
+          newObj.text = conversationsArray[i].dataValues.Messages[0].dataValues.body;
+          newObj.createAt = conversationsArray[i].dataValues.Messages[0].dataValues.createdAt;
+          newObj.participants = [conversationsArray[i].dataValues.participant1, conversationsArray[i].dataValues.participant2];
+          newObj.blackList = conversationsArray[i].dataValues.blackList;
+          newObj.favoriteList = conversationsArray[i].dataValues.favoriteList;
         
-        conversations.push(newObj);
+          conversations.push(newObj);
+        }
       }
-  
       const interlocutors = [];
   
       conversations.forEach(conversation => {
@@ -182,7 +182,7 @@ module.exports.getPreview = async (req, res, next) => {
         },
         attributes: ['id', 'firstName', 'lastName', 'displayName', 'avatar'],
       });
-   
+
       conversations.forEach((conversation) => {
         senders.forEach(sender => {
           if (conversation.participants.includes(sender.dataValues.id)) {
@@ -197,7 +197,7 @@ module.exports.getPreview = async (req, res, next) => {
         });
       });
       res.send(conversations);
-    }
+    } 
   } catch (err) {
     next(err);
   }
@@ -230,11 +230,8 @@ module.exports.blackList = async (req, res, next) => {
     chat.blackList = updatedChatPath.blackList;
     chat.favoriteList =  updatedChatPath.favoriteList;
     chat._id = updatedChatPath.id;
-    // chat.createdAt = updatedChatPath.createdAt;
-    // chat.updatedAt = updatedChatPath.updatedAt;
-    console.log('chat');
-    console.log(chat);
-  
+    chat.createdAt = updatedChatPath.createdAt;
+    chat.updatedAt = updatedChatPath.updatedAt;
     res.send(chat);
     const interlocutorId = req.body.participants.filter(
       (participant) => participant !== req.tokenData.userId)[ 0 ];
@@ -271,8 +268,8 @@ module.exports.favoriteChat = async (req, res, next) => {
     chat.blackList = updatedChatPath.blackList;
     chat.favoriteList =  updatedChatPath.favoriteList;
     chat._id = updatedChatPath.id;
-    // chat.createdAt = updatedChatPath.createdAt;
-    // chat.updatedAt = updatedChatPath.updatedAt; 
+    chat.createdAt = updatedChatPath.createdAt;
+    chat.updatedAt = updatedChatPath.updatedAt; 
     res.send(chat);
     const interlocutorId = req.body.participants.filter(
       (participant) => participant !== req.tokenData.userId)[ 0 ];
@@ -284,10 +281,6 @@ module.exports.favoriteChat = async (req, res, next) => {
 };
 
 const getCatalog = (catalogs) => {
-  console.log('!!!!! createCatalog !!!!!!')
-  console.log(catalogs);
-  console.log(catalogs.Conversations);
-
   let catalog = {};
   catalog.chats = []; 
   if(catalogs.Conversations.length === 0){
@@ -308,7 +301,6 @@ const getCatalog = (catalogs) => {
 
 
 const getCatalogsList = (catalogs) => {
-  console.log(catalogs)
   let conversations = [];
     for (let i = 0; i < catalogs.length; i++) {
       let newObj = {};
@@ -328,8 +320,6 @@ const getCatalogsList = (catalogs) => {
     return conversations; 
 };
 module.exports.createCatalog = async (req, res, next) => { 
-  console.log('createCatalog');
- 
   try {
     const createCatalog = await db.Catalog.create({
       userId: req.tokenData.userId,
@@ -337,11 +327,8 @@ module.exports.createCatalog = async (req, res, next) => {
     });
 
     const conversations =  await db.Conversation.findByPk(req.body.chatId);
-    console.log('conversations');
-    console.log(conversations);
-    const c = await createCatalog.addConversations(conversations);
-    console.log('c');
-    console.log(c);
+
+    await createCatalog.addConversations(conversations);
 
     const catalogs = await db.Catalog.findOne( { 
       where: { 
@@ -393,8 +380,6 @@ module.exports.updateNameCatalog = async (req, res, next) => {
 
 module.exports.addNewChatToCatalog = async (req, res, next) => {
   try {
-    console.log('addNewChatToCatalog');
-
     const updatedCatalog = await db.Catalog.findOne({
       where: {
         id: req.body.catalogId,
@@ -406,9 +391,7 @@ module.exports.addNewChatToCatalog = async (req, res, next) => {
         id: req.body.chatId 
       }
     })
-    const addconversation = await updatedCatalog.addConversations(conversation);
-    console.log(addconversation);
-
+    await updatedCatalog.addConversations(conversation);
     const catalogs = await db.Catalog.findOne({
       where: { 
         id: req.body.catalogId,
@@ -429,7 +412,6 @@ module.exports.addNewChatToCatalog = async (req, res, next) => {
 };
 
 module.exports.removeChatFromCatalog = async (req, res, next) => {
-  console.log('removeChatFromCatalog');
   try {
     const chatForDelete = await db.Conversation.findOne( { 
       where: { 
@@ -496,7 +478,6 @@ try {
 
 module.exports.getCatalogs = async (req, res, next) => {
   try {
-    console.log('!!! getCatalogs')
     const catalogs = await db.Catalog.findAll({
       where: {
         userId: req.tokenData.userId
@@ -504,7 +485,7 @@ module.exports.getCatalogs = async (req, res, next) => {
       include: [
         {
           model: db.Conversation,
-          //order: [['createdAt']] 
+          order: [['createdAt']] 
         },
       ],
     });
