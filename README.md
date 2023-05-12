@@ -38,11 +38,13 @@ server/handlerError/logErrors.js
 Ошибки кладутся по пути: server/public/logErrors
 
 <h2>FULLSTACK</h2>	
-<h4>Для этого раздела, с помощью сидов созданы три пользователя - customer, creator и moderator</h4>
+<h4>Для этого раздела, с помощью сидов созданы три пользователя - customer, creator и moderator</h4>  
+
 moderator:  
-displayName: 'James_moderator',  
+displayName:  
+'James_moderator',  
 email: 'moderator@squadhelp.com',  
-password: 'moderator77'  
+password: 'moderator77'   
 
 creator:  
 displayName: 'John_creator',  
