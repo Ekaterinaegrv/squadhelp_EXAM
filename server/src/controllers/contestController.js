@@ -202,14 +202,15 @@ const resolveOffer = async (
     if (offer.status === CONSTANTS.OFFER_STATUS_REJECTED && creatorId !==
       offer.userId) {
       arrayRoomsId.push(offer.userId);
-    } else {
-      if(offer.status === CONSTANTS.OFFER_STATUS_WON) {
-        updatedOffer = offer;
-      }
+    } 
+    if(offer.status === CONSTANTS.OFFER_STATUS_WON) {
+      updatedOffer = offer;
     }
   });
-  controller.getNotificationController().emitChangeOfferStatus(arrayRoomsId,
-    'Someone of yours offers was rejected', contestId);
+  if (arrayRoomsId.length > 0) {
+    controller.getNotificationController().emitChangeOfferStatus(arrayRoomsId,
+      'Someone of yours offers was rejected', contestId);
+  }
   controller.getNotificationController().emitChangeOfferStatus(creatorId,
     'Someone of your offers WIN', contestId);
   return updatedOffer;

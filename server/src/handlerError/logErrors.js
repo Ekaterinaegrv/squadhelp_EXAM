@@ -14,7 +14,7 @@ if (!fs.existsSync(filePath)) {
   fs.mkdirSync(filePath, {
     recursive: true,
   })
-  .appendFileSync(`${filePath}/logfile.txt`)
+  fs.appendFileSync(`${filePath}/logfile.txt`)
 
 }
 
