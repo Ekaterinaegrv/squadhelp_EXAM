@@ -1,0 +1,52 @@
+$---white-color: #fff
+$---content-font-color: #77838f
+$---rounded-element: 5px
+$---border-type: 1px solid #e7eaf3
+
+
+.boxInactive
+    display: flex
+    flex-direction: column
+    align-items: center
+    border: $---border-type
+    border-radius: $---rounded-element
+    padding: 2rem
+    text-align: center
+    margin: 0 1rem
+    @media(max-width: 1000px)
+        width: 60vw
+        margin: 1rem
+    .button
+        margin-bottom: 1rem
+        padding: 0.7rem
+        width: 70px
+        background-color: $---content-font-color
+        border: none
+        border-radius: 30px
+        color: $---white-color
+.boxActive
+    display: flex
+    flex-direction: column
+    align-items: center
+    border: 3px solid #2cb9b7
+    border-radius: $---rounded-element
+    padding: 2rem
+    text-align: center
+    margin: 0 1rem
+    @media(max-width: 1000px)
+        width: 60vw
+        margin: 1rem
+
+    .button
+        margin-bottom: 1rem
+        padding: 0.7rem
+        width: 70px
+        background-color: #2cb9b7
+        border: none
+        border-radius: 30px
+        color: $---white-color
+
+
+
+            
+
