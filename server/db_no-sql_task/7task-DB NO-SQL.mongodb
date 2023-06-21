@@ -1,5 +1,20 @@
 use('shm-chat');
 
-db.messages.find({body:/паровоз/i}).count();
+db.messages.find({body:/hello/}).count();
 //or
 db.messages.find( { 'body' : { '$regex' : 'паровоз', '$options' : 'i' } } ).count();
+
+//запит з використанням агрегації 
+db.messages.aggregate([
+    {
+      $match: {
+        body: { $regex: 'паровоз', $options: 'i' }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        count: { $sum: 1 }
+      }
+    }
+  ])
