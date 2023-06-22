@@ -7,22 +7,18 @@ SELECT role, count(role) FROM "Users" GROUP BY role;
 --в новорічні свята в період з 25.12 по 14.01, 
 --необхідно зарахувати по 10% кешбеку з усіх замовлень у цей період.
 
-
+WITH "cashback_subquery" AS (
+  SELECT "userId", SUM(prize * 0.1) AS cashback
+  FROM "Contests"
+  WHERE extract('month' from "createdAt") = 12 AND extract('day' FROM "createdAt") >=25
+  OR extract('month' from "createdAt") = 1 AND extract('day' FROM "createdAt") <= 14
+  GROUP BY "userId"
+)
 UPDATE "Users"
-SET balance = balance * 1.1
-WHERE EXISTS (
-SELECT *
-FROM "Users" AS u
-JOIN "Contests" AS c
-ON u.id = c."userId"
-WHERE "Users".role = 'customer'
-AND extract ('day' from c."createdAt")
-BETWEEN 25 AND 31
-AND extract ('day' from c."createdAt")
-BETWEEN 1 AND 14
-AND extract ('month' from c."createdAt") = 12 
-AND extract ('month' from c."createdAt") = 1);
-
+SET balance = balance + "cashback_subquery".cashback
+FROM "cashback_subquery"
+WHERE "Users"."id" = "cashback_subquery"."userId"
+AND "Users"."role" = 'customer';
 
 ------------------------------------------
 --11. Для ролі сreative необхідно виплатити 3-м юзерам 
