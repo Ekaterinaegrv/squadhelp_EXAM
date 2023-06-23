@@ -27,7 +27,9 @@ const ButtonGroup = (props) =>{
 
     const renderButton = contents.map((content) => (
       <div
-        onClick={() => {setIsActive(content.id)}} className={styles}> 
+        onClick={() => {setIsActive(content.id)}} className={styles}
+        key={content.id}
+        > 
         <Button
             isActive={content.id === isActive}
             text={content.text}
