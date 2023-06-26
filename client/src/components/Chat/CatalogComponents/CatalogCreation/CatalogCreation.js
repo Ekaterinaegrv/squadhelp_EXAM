@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import CONSTANTS from '../../../../constants';
+import CONSTANTS from '../../../../constants/constants';
 import {
   changeTypeOfChatAdding,
   changeShowAddChatToCatalogMenu,

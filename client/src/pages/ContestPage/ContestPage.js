@@ -18,7 +18,7 @@ import styles from './ContestPage.module.sass';
 import OfferBox from '../../components/OfferBox/OfferBox';
 import OfferBoxForModerator from '../../components/OfferBox/OfferBox ForModerator';
 import OfferForm from '../../components/OfferForm/OfferForm';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import Brief from '../../components/Brief/Brief';
 import Spinner from '../../components/Spinner/Spinner';
 import TryAgain from '../../components/TryAgain/TryAgain';
@@ -43,26 +43,19 @@ class ContestPage extends React.Component {
       const { role } = this.props.userStore.data;
       const array = [];
       for (let i = 0; i < this.props.contestByIdStore.offers.length; i++) {
+        const {contestData, offers} = this.props.contestByIdStore;
+        const offerProps = {
+          data: offers[i],
+          key: offers[i].id,
+          needButtons: this.needButtons,
+          setOfferStatus: this.setOfferStatus,
+          contestType: contestData.contestType,
+          date: new Date(),
+        };
         array.push(
           role === CONSTANTS.MODERATOR ?
-        <OfferBoxForModerator                         
-          data={this.props.contestByIdStore.offers[i]}
-          key={this.props.contestByIdStore.offers[i].id}
-          needButtons={this.needButtons}
-          setOfferStatus={this.setOfferStatus}
-          contestType={this.props.contestByIdStore.contestData.contestType}
-          date={new Date()}
-        />
-        :
-        <OfferBox                      
-          data={this.props.contestByIdStore.offers[i]}
-          key={this.props.contestByIdStore.offers[i].id}
-          needButtons={this.needButtons}
-          setOfferStatus={this.setOfferStatus}
-          contestType={this.props.contestByIdStore.contestData.contestType}
-          date={new Date()}
-        />
-        
+        <OfferBoxForModerator {...offerProps} /> :
+        <OfferBox {...offerProps}/>
         );
       }
       return array.length !== 0 ? array : <div className={styles.notFound}>There is no suggestion at this moment</div>;

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { getContestsForCustomer, clearContestList, setNewCustomerFilter } from '../../actions/actionCreator';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import ContestsContainer from '../ContestsContainer/ContestsContainer';
 import ContestBox from '../ContestBox/ContestBox';
 import styles from './CustomerDashboard.module.sass';

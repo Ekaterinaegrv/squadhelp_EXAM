@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Formik } from 'formik';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import { getDataForContest } from '../../actions/actionCreator';
 import styles from './ContestForm.module.sass';
 import Spinner from '../Spinner/Spinner';

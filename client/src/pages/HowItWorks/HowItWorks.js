@@ -1,6 +1,6 @@
 import React from 'react';
 import FAQ from '../../constants/FAQConstants';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import styles from './HowItWorks.module.sass';
 import Accordion from '../../components/Accordion/Accordion';
 import Header from '../../components/Header/Header';
@@ -21,7 +21,7 @@ return(
         <h1>How Does Squadhelp Work?</h1>
         <p className={styles.content}>Squadhelp helps you come up with a great name for your business by combining the power of crowdsourcing with sophisticated technology and Agency-level validation services.</p>
         <div className={styles.button}>
-            <small class="fas fa-play mr-2"></small>
+            <small className="fas fa-play mr-2"></small>
             <span>Play Video</span>
         </div>
     </article>
@@ -172,7 +172,7 @@ return(
 
     <div className={styles.leftSection}>
         <article className={styles.questionText}>
-            <span><i class="fas fa-angle-right btn-icon__inner"/></span>
+            <span><i className="fas fa-angle-right btn-icon__inner"/></span>
             <div>
                 <h4>Pay a Fraction of cost vs hiring an agency</h4>
                 <p className={styles.content}>For as low as $199, our naming contests and marketplace allow you to get an amazing brand quickly and affordably.</p>
@@ -180,7 +180,7 @@ return(
         </article>
 
         <article className={styles.questionText}>
-            <span><i class="fas fa-angle-right btn-icon__inner"/></span>
+            <span><i className="fas fa-angle-right btn-icon__inner"/></span>
             <div>
                 <h4>Satisfaction Guarantee</h4>
                 <p className={styles.content}>Of course! We have policies in place to ensure that you are satisfied with your experience. <a href='/'>Learn more</a></p>

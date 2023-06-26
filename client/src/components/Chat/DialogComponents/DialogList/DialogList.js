@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import CONSTANTS from '../../../../constants';
+import CONSTANTS from '../../../../constants/constants';
 import {
   goToExpandedDialog,
   changeChatFavorite,

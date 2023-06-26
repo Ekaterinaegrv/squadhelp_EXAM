@@ -6,7 +6,7 @@ const initialState = {
   error: null,
 };
 
-export default function (state = initialState, action) {
+function dataForContestReducer(state = initialState, action) {
   switch (action.type) {
     case ACTION.GET_DATA_FOR_CONTEST_ACTION_REQUEST: {
       return {
@@ -36,3 +36,4 @@ export default function (state = initialState, action) {
       return state;
   }
 }
+export default dataForContestReducer;

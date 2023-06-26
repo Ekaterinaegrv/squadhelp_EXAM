@@ -1,5 +1,5 @@
 import ACTION from '../actions/actionTypes';
-import CONSTANTS from '../constants';
+import CONSTANTS from '../constants/constants';
 
 const initialState = {
   isFetching: true,
@@ -16,7 +16,7 @@ const initialState = {
   haveMore: true,
 };
 
-export default function (state = initialState, action) {
+function getContestsReducer(state = initialState, action) {
   switch (action.type) {
     case ACTION.GET_CONTESTS_ACTION_REQUEST: {
       return {
@@ -67,3 +67,4 @@ export default function (state = initialState, action) {
       return state;
   }
 }
+export default getContestsReducer;

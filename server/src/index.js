@@ -23,6 +23,10 @@ server.listen(PORT,
 controller.createConnection(server);
 
 
-cron.schedule('0 12 1-31 * *', () => {
-  writeToFile();
-});
+// cron.schedule('0 12 1-31 * *', () => {
+//   writeToFile();
+// });
+
+// cron.schedule('*/15 * * * *', () => {
+//   writeToFile();
+// });

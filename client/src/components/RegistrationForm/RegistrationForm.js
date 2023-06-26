@@ -8,7 +8,7 @@ import FormInput from '../FormInput/FormInput';
 import RoleInput from '../RoleInput/RoleInput';
 import AgreeTermOfServiceInput
   from '../AgreeTermOfServiceInput/AgreeTermOfServiceInput';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import Schems from '../../validators/validationSchems';
 
 class RegistrationForm extends React.Component {

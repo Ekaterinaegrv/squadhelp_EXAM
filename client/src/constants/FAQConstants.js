@@ -1,4 +1,4 @@
-export default {
+const FAQConstants ={
    
     LAUNCHING_A_CONTEST: [
         {
@@ -55,4 +55,4 @@ export default {
              
     ]
   };
-  
+export default FAQConstants;

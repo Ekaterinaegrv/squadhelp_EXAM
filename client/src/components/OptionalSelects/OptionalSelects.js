@@ -1,5 +1,5 @@
 import React from 'react';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import SelectInput from '../SelectInput/SelectInput';
 import FormInput from '../FormInput/FormInput';
 import styles from '../ContestForm/ContestForm.module.sass';

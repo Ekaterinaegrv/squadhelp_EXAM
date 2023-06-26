@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { backToDialogList, changeChatFavorite, changeChatBlock } from '../../../../actions/actionCreator';
 import styles from './ChatHeader.module.sass';
-import CONSTANTS from '../../../../constants';
+import CONSTANTS from '../../../../constants/constants';
 
 const ChatHeader = (props) => {
   const changeFavorite = (data, event) => {

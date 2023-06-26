@@ -15,7 +15,7 @@ const initialState = {
   isShowModal: false,
 };
 
-export default function (state = initialState, action) {
+function getContestByIdReducer(state = initialState, action) {
   switch (action.type) {
     case ACTION.GET_CONTEST_BY_ID_REQUEST: {
       return {
@@ -137,3 +137,4 @@ export default function (state = initialState, action) {
       return state;
   }
 }
+export default getContestByIdReducer;

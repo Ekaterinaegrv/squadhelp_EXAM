@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import styles from './Header.module.sass';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import { clearUserStore, headerRequest } from '../../actions/actionCreator';
 
 class Header extends React.Component {

@@ -36,7 +36,7 @@ const RenderEvent = (props) => {
 
         <div className={styles.eventBox}>
         <span>When deadline</span>
-        <div>{nowLeft === undefined ? 'No data' : nowLeft}</div>
+        <div>{nowLeft ? nowLeft : 'No data'}</div>
         </div>
 
         <span onClick={()=> removeTask(todo.id)}>

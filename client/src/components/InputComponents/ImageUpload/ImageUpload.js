@@ -4,7 +4,6 @@ import { useField } from 'formik';
 
 const ImageUpload = (props) => {
   const [field, meta, helpers] = useField(props.name); 
-  const {value} = meta;
   const {setValue} = helpers;
   const { classes: {uploadContainer, inputContainer, imgStyle} } = props;
   const onChange = (e) => {
@@ -35,7 +34,7 @@ const ImageUpload = (props) => {
         />
         <label htmlFor="fileInput">Chose file</label>
       </div>
-      <img id="imagePreview" className={classNames({ [imgStyle]: !!field.value })} alt="image" /> 
+      <img id="imagePreview" className={classNames({ [imgStyle]: !!field.value })} alt="preview" /> 
     </div>
   );
 };

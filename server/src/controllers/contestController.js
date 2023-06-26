@@ -11,7 +11,6 @@ module.exports.dataForContest = async (req, res, next) => {
   const response = {};
   try {
     const { body: { characteristic1, characteristic2 } } = req;
-    console.log(req.body, characteristic1, characteristic2);
     const types = [characteristic1, characteristic2, 'industry'].filter(Boolean);
 
     const characteristics = await db.Select.findAll({
@@ -32,7 +31,6 @@ module.exports.dataForContest = async (req, res, next) => {
     });
     res.send(response);
   } catch (err) {
-    console.log(err.message);
     next(new ServerError('cannot get contest preferences'));
   }
 };
@@ -111,7 +109,6 @@ module.exports.getContestById = async (req, res, next) => {
       
     
   } catch (e) {
-    console.log(e)
     next(new ServerError());
   }
 };

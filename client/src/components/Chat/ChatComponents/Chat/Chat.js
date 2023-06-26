@@ -12,7 +12,7 @@ import {
   getPreviewChat,
 } from '../../../../actions/actionCreator';
 import { chatController } from '../../../../api/ws/socketController';
-import CONSTANTS from '../../../../constants';
+import CONSTANTS from '../../../../constants/constants';
 import CatalogListContainer from '../../CatalogComponents/CatalogListContainer/CatalogListContainer';
 import CatalogCreation from '../../CatalogComponents/CatalogCreation/CatalogCreation';
 import CatalogListHeader from '../../CatalogComponents/CatalogListHeader/CatalogListHeader';

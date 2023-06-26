@@ -5,7 +5,7 @@ import LoginForm from '../../components/LoginForm/LoginForm';
 import Logo from '../../components/Logo';
 import styles from './LoginPage.module.sass';
 import { clearErrorSignUpAndLogin } from '../../actions/actionCreator';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 
 const LoginPage = (props) => (
   <div className={styles.mainContainer}>

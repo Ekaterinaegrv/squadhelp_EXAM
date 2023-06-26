@@ -15,17 +15,17 @@ const TimerEvent = (props) => {
         const time = moment(dedlineDate).endOf().fromNow(); 
         props.durationUntilFinish(time.toString());
     }
-  
-    useEffect(() => {                                           
+
+
+    useEffect(() => {  
         const dateNow = Date.parse(new Date());
-        const dedlineDate = deadlineState.date;
+                                         
         intervalHandler();
-        const idInterval = setInterval(() => intervalHandler, 2000);      
-        
+        const idInterval = setInterval(() => intervalHandler(), 2000);      
+
         const idTimer = setTimeout(() => {
             setDeadline(deadlineState, deadlineState.isComplete = true);
             completeToState(id, deadlineState.isComplete);
-            console.log('finish')
             clearInterval(idInterval)    
         },
         dedlineDate - dateNow )
@@ -33,8 +33,7 @@ const TimerEvent = (props) => {
         return () => {
             clearTimeout(idTimer);
         }
-    }, []);
-
+    },[]);
     return (
         <>
         </>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import CONTANTS from '../constants';
+import CONTANTS from '../constants/constants';
 import history from '../browserHistory';
 
 const instance = axios.create({

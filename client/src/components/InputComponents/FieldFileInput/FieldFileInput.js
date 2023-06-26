@@ -3,9 +3,8 @@ import { Field, useField } from 'formik';
 
 const FieldFileInput = (props) => {
   const [field, meta, helpers] = useField(props.name);
-  const {value} = meta;
   const {setValue} = helpers;
-const { classes, ...rest } = props
+  const { classes, ...rest } = props
   const {
     fileUploadContainer, labelClass, fileNameClass, fileInput,
   } = classes;
@@ -39,7 +38,9 @@ const { classes, ...rest } = props
               type="file"
               onChange={onChange}
             />
+            {meta.touched && meta.error ? (<div>{meta.error}</div>) : null}
           </div>
+
         );
       }}
     </Field>

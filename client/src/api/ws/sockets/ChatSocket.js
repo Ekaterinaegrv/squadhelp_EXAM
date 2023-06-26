@@ -1,6 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import WebSocket from './WebSocket';
-import CONTANTS from '../../../constants';
+import CONTANTS from '../../../constants/constants';
 import { addMessage, changeBlockStatusInStore } from '../../../actions/actionCreator';
 
 class ChatSocket extends WebSocket {

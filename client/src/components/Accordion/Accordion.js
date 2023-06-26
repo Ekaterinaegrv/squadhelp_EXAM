@@ -23,7 +23,7 @@ return(
             <div className={styles[accordion === index ? 'accordionHeadingActive' : 'accordionHeadingInactive']}>
                 <p className={styles.heading}>{item.question}</p>
                 <p className={styles[accordion === index ? 'arrowDown' : 'arrowRight']}>
-                    <i class="fas fa-arrow-down small"/>
+                    <i className="fas fa-arrow-down small"/>
                 </p>
             </div>     
             

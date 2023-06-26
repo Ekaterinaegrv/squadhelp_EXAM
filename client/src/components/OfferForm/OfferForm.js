@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Formik, Form } from 'formik';
-import CONTANTS from '../../constants';
+import CONTANTS from '../../constants/constants';
 import { setOffer, clearAddOfferError } from '../../actions/actionCreator';
 import styles from './OfferForm.module.sass';
 import ImageUpload from '../InputComponents/ImageUpload/ImageUpload';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import CustomerDashboard from '../../components/CustomerDashboard/CustomerDashboard';
 import CreatorDashboard from '../../components/CreatorDashboard/CreatorDashboard';
 import Header from '../../components/Header/Header';
@@ -10,7 +10,6 @@ import styles from '../LoginPage/LoginPage.module.sass'
 
 const Dashboard = (props) => {
   const { role, history } = props;
-  console.log(role);
 
   const dashboardRender = () => {
     if(role) {

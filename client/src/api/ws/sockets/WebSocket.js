@@ -1,5 +1,5 @@
 import socketIoClient from 'socket.io-client';
-import CONSTANTS from '../../../constants';
+import CONSTANTS from '../../../constants/constants';
 
 class WebSocket {
   constructor(dispatch, getState, room) {

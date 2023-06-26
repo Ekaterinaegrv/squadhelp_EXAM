@@ -11,7 +11,7 @@ import {
   goToExpandedDialog,
   changeShowImage,
 } from '../../actions/actionCreator';
-import CONSTANTS from '../../constants';
+import CONSTANTS from '../../constants/constants';
 import styles from './OfferBox.module.sass';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import './confirmStyle.css';
