@@ -4,21 +4,16 @@ import { initSocket } from '../api/ws/socketController';
 import configureStore from './configureStore';
 import App from '../App';
 
-class Setup extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      store: initSocket(configureStore()),
-    };
-  }
+const Setup = () => {
 
-  render() {
+  const store = initSocket(configureStore());
+
+
     return (
-      <Provider store={this.state.store}>
+      <Provider store={store}>
         <App />
       </Provider>
     );
-  }
 }
 
 export default Setup;

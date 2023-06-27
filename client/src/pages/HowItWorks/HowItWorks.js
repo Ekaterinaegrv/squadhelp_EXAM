@@ -14,7 +14,6 @@ const HowItWorks = (props) => {
 return(
 <>
 <Header/>
-{/* 1 block */}
 <section className={styles.container}>
     <article className={styles.main}>
         <span className={styles.subtitleButton}>World's #1 Naming Platform</span>
@@ -29,8 +28,7 @@ return(
     <img src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/container.png`} className={styles.mainImage} alt='How Does Squadhelp Work?'/>
 </section>
 
-{/* 2 block */}          
-<section className={styles['howToUseContainer','containerPadding']}>
+<section className={styles.containerPadding}>
         <article  className={styles.heading}>
             <span className={styles.subtitleButton}>Ous services</span>
             <h2>3 Ways To Use Squadhelp</h2>
@@ -60,7 +58,6 @@ return(
       
     </section>
 </section>
-{/* 3 block */}
 <section className={styles.containerPadding}>
     <article  className={styles.heading}>
         <img className={styles.icon} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/champion-cup.png`} alt='champion cup'/>
@@ -92,8 +89,6 @@ return(
 
 </section>
 
-{/* 4 block Launching A Contest */}
-
 
 <section className={styles.containerPadding}>
 
@@ -124,9 +119,6 @@ return(
         </main>
     </section>
 </section>
-
-{/* 5 block Ready to get started? */}
-
 
 <section className={styles.blueCallToAction}>
     
@@ -161,10 +153,6 @@ return(
 
 </section>
 
-
-
-
-{/* Questions block */}
 <section className={styles.containerPadding}>
 
 
@@ -200,9 +188,6 @@ return(
     </section>
 
 </section>
-
-
-{/* Brands block */}
 
 <section className={styles.containerPadding}>
     <section className={styles.brands}>

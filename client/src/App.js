@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { ToastContainer } from 'react-toastify';
@@ -21,8 +21,7 @@ import HowItWorks from './pages/HowItWorks/HowItWorks';
 import Events from './pages/Events/Events';
 import ButtonGroup from './components/ButtonGroup/ButtonGroup';
 
-class App extends Component {
-  render() {
+  const App = () => {
     return (
       <Router>
         <ToastContainer
@@ -79,6 +78,5 @@ class App extends Component {
       </Router>
     );
   }
-}
 
 export default App;

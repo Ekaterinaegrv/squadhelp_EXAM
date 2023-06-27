@@ -4,7 +4,6 @@ import CONSTANTS from '../../constants/constants';
 import CustomerDashboard from '../../components/CustomerDashboard/CustomerDashboard';
 import CreatorDashboard from '../../components/CreatorDashboard/CreatorDashboard';
 import Header from '../../components/Header/Header';
-import LoginPage from '../LoginPage/LoginPage';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import styles from '../LoginPage/LoginPage.module.sass'
 
@@ -22,7 +21,9 @@ const Dashboard = (props) => {
         }
         case CONSTANTS.MODERATOR:{
           return (<CustomerDashboard history={history} match={props.match} role={props.role}/>)
-        } }
+        } 
+        default: <LoginForm history={history} />
+      }
     } else {
         return (
           <div className={styles.mainContainer}>
@@ -44,6 +45,7 @@ const Dashboard = (props) => {
   );
 };
 
-const mapStateToProps = (state) => state.userStore.data;
-
+const mapStateToProps = (state) => ({
+  role: state.userStore.data ? state.userStore.data.role : null,
+});
 export default connect(mapStateToProps)(Dashboard);
