@@ -280,8 +280,8 @@ module.exports.setOfferStatus = async (req, res, next) => {
 module.exports.getCustomersContests = (req, res, next) => {
   db.Contest.findAll({
     where: req.tokenData.role === CONSTANTS.MODERATOR ? { status: req.headers.status } : {status: req.headers.status, userId: req.tokenData.userId},
-    limit: req.body.limit,
-    offset: req.body.offset ? req.body.offset : 0,
+    limit: req.params.limit,
+    offset: req.params.offset ? req.params.offset : 0,
     order: [['id', 'DESC']],
     include: [
       {
