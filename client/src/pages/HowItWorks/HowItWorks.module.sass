@@ -206,16 +206,20 @@ h5
   background-image: linear-gradient(150deg,#2d1582 0%,#19a0ff 100%)
   padding: 5%
   position: relative
+  overflow: hidden
   h2
     color: #00dffc
     font-weight: 600
     z-index: 1
+    text-align: center
   p
     color: $---white-color
     text-align: center
     padding: 1rem 6rem
     margin: 0
     z-index: 1
+    @media screen and (max-width: 500px)
+      padding: 1rem
   .button
     color: $---main-blue-color
     background-color: $---white-color
@@ -233,12 +237,22 @@ h5
     bottom: 0
     height: 80%
     opacity: 50%
+    @media screen and (max-width: 720px)
+      right: -25%
+    @media screen and (max-width: 500px)
+      right: -45%
+      bottom: -20%
   .leafImgLeft
     position: absolute
     left: 0
     top: 0
     height: 80%
     opacity: 50%
+    @media screen and (max-width: 720px)
+      left: -25%
+    @media screen and (max-width: 500px)
+      left: -55%
+
 
 .containerDignity
   display: grid
@@ -264,8 +278,15 @@ h5
       left: 95%
       top: 30%
       transform: rotate(15deg)
+      @media screen and (max-width: 850px)
+        display: none
     &:last-child::after
       content: none
+    @media screen and (max-width: 850px)
+      grid-column: 1/4
+      p
+        width: 60%
+
 
 .contactsBlock
   display: grid 
@@ -347,6 +368,29 @@ h5
       transform: translate(0, -4px)
 
 
+// .brands
+//   display: flex    
+//   @media screen and (max-width: 850px)
+//     flex-direction: column
+//   .headingBrands
+//     padding-top: 3rem
+//     width: 30%
+//     @media screen and (max-width: 850px)
+//       padding-bottom: 1rem
+//   .brandsItems
+//     border-top: $---border-type
+//     padding-top: 3rem
+//     display: flex
+//     justify-content: space-evenly
+//     a
+//       padding: 1rem 0
+//       @media screen and (max-width: 850px)
+//         width: 200px
+//     img
+//       height: 100%
+//     @media screen and (max-width: 850px)
+//       flex-wrap: wrap
+
 .brands
   display: flex    
   @media screen and (max-width: 850px)
@@ -362,9 +406,16 @@ h5
     width: 100%
     display: flex
     justify-content: space-evenly
+    flex-wrap: wrap
     a
       padding: 1rem 0
+      @media screen and (max-width: 850px)
+        width: 200px
+      @media screen and (max-width: 700px)
+        width: 100%
     @media screen and (max-width: 850px)
-      flex-direction: column
+      justify-content: center
+    @media screen and (max-width: 470px)
+      justify-content: left
     img
       height: 100%

@@ -128,7 +128,6 @@ return(
     
     <img className={styles.leafImgRight} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/right-leaf.png`} alt='leaf'/>
     <img className={styles.leafImgLeft} src={`${CONSTANTS.STATIC_IMAGES_PATH}how_it_works/left-leaf.png`} alt='leaf'/>
-    
 </section>
     
 <section className={styles.containerPadding}>
