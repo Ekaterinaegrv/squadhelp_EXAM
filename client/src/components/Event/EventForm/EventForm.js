@@ -1,45 +1,29 @@
-import React, { useReducer } from "react";
-import {Formik, Form, Field} from 'formik';
-import styles from './EventForm.module.sass'
+import React from "react";
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import styles from './EventForm.module.sass';
+import Schems from '../../../validators/validationSchems';
 
-const reducer = (state, action) => {
-  const { name, value } = action;
-  return {
-    ...state,
-    [name]: value,
-  };
-};
 
+const initialValues = {
+  todoText: '',
+  deadline: '', 
+  notification: ''
+}
 const EventForm = (props) => {
 
-
-  const [eventInput, dispatch] = useReducer(reducer, {
-    todoText: '',
-    deadline: '',
-    notification: ''
-  });
-
-  const changeHandler = ({ target: { name, value } }) => {
-    const action = { name, value };
-    dispatch(action);
+  const submitHandler = (values, { resetForm }) => {
+    props.addTask(values);
+    resetForm();
   };
-
-  const initialValues = {
-    todoText: '',
-    deadline: '', 
-    notification: ''
-  }
-  
-  const submitHandler = (event) => {
-    props.addTask(eventInput);
-  }
 
   return (
 
     <>
     <Formik
         initialValues={initialValues}
-        onSubmit={submitHandler}>
+        onSubmit={submitHandler}
+        validationSchema={Schems.EventSchema}
+        >
         {(props) => (
                 <Form
                 className={styles.main}
@@ -48,29 +32,27 @@ const EventForm = (props) => {
                   <Field 
                     type='text' 
                     name="todoText" 
+                    id="todoText" 
                     placeholder="Type your event title" 
-                    value={eventInput.todoText}
-                    onChange={changeHandler}
                     required
                     />
+                    <ErrorMessage name="todoText" component="div" className={styles.error}/>
                 <label>Deadline time</label>
                   <Field 
-                    name="deadline" 
+                    name="deadline"
+                    id="deadline"
                     type="datetime-local"
-                    onChange={changeHandler}
-                    value={eventInput.deadline}
                     required
                     />
+                    <ErrorMessage name="deadline" component="div" className={styles.error}/>
                 <label>Notification time</label>
                   <Field 
-                    name="notification" 
+                    name="notification"
+                    id="notification"
                     type="datetime-local"
-                    onChange={changeHandler}
-                    value={eventInput.notification}
                     />
-                
+                    <ErrorMessage name="notification" component="div" className={styles.error}/>
                     <button type="submit">CREATE EVENT</button>
-
                 </Form>
             )}
     </Formik>

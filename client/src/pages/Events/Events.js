@@ -3,15 +3,13 @@ import styles from "./Events.module.sass";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
 import EventForm from "../../components/Event/EventForm/EventForm";
-import RenderEvent from "../../components/Event/RenderEvent/RenderEvent";
+import EventItem from "../../components/Event/EventItem/EventItem";
 import NotificationEvent from "../../components/Event/TimerEvent/NotificationEvent";
-
 
 const Events = (props) => {
   const [todos, setTodos] = useState([]);
 
   const addTask = (eventInput) => {
-  console.log(eventInput)
   if(eventInput) {
     const {todoText, deadline, notification} = eventInput;
     const newItem = {
@@ -56,6 +54,13 @@ useEffect(()=> {
     }
  }
 
+const countEventsLeft = todos.reduce((acc, obj) => {
+  if (obj.complete === false) {
+    return acc + 1;
+  } else {
+    return acc;
+  }
+}, 0);
 
 if(todos) {
   const compare = (a, b) => {
@@ -65,6 +70,7 @@ if(todos) {
   }
   todos.sort(compare)
 }
+
 
       return (
           <>
@@ -81,23 +87,24 @@ if(todos) {
             <div className={styles.todoBox}>
               <h3>You have a {todos ? todos.length : 0} open events</h3>
               <p>If you completed event - just delete it by clicking trash icon</p>
-
+              <p>Not completed events: {countEventsLeft}</p>
               <ul>
                 {todos ? (todos.map((todo) => {
                     return(
-                      <>
-                      <RenderEvent
-                      todo={todo}
+                      <li
                       key={todo.id}
+                      >
+                      <EventItem
+                      todo={todo}
                       removeTask={removeTask}
                       completeToState={setCompleteStatus}
+                      countEventsLeft={countEventsLeft}
                       />
-                      <NotificationEvent
+                      {/* <NotificationEvent
                       todo={todo}
-                      />
-                      </>
+                      /> */}
+                      </li>
                     )
-
                 })) 
                 : null
                 }

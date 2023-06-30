@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import TimerEvent from "../TimerEvent/TimerEvent";
-import styles from './RenderEvent.module.sass';
+import styles from './EventItem.module.sass';
+import NotificationEvent from "../TimerEvent/NotificationEvent";
 
 
-const RenderEvent = (props) => {
+const EventItem = (props) => {
     const {removeTask, completeToState, todo} = props;
     const [nowLeft, setNowLeft] = useState();
 
@@ -20,8 +21,7 @@ const RenderEvent = (props) => {
  
     return (
     <>
-    <li 
-    key={todo.id}
+    <div 
     className={styles[todo.complete ? 'listItemCompete' : 'listItemNotCompete']} 
     >
         <div className={styles.eventBox}>
@@ -42,15 +42,18 @@ const RenderEvent = (props) => {
         <span onClick={()=> removeTask(todo.id)}>
             <i className="fas fa-trash"></i>    
         </span>  
-    </li>
+    </div>
 
     <TimerEvent
         todo={todo}
         completeToState={completeToState}
         durationUntilFinish={durationUntilFinish}
     />
+    <NotificationEvent
+        todo={todo}
+    />
     </>
     )
   };
 
-export default RenderEvent;
+export default EventItem;

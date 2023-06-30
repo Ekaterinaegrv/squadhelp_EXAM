@@ -1,20 +1,18 @@
 import React from "react";
 
 const NotificationEvent = (props) => {
+  const {event, notification, complete} = props.todo;
 
-  const {event, notification} = props.todo;
-
-  if (notification) {
+  if (notification && !complete) {
     const notificationTime = new Date(notification);
-    if (notificationTime.getTime() < Date.now()) {
-      console.log("Notification time has already passed.");
-    } else {
+    if (notificationTime.getTime() > Date.now()) {
       const delay = notificationTime.getTime() - Date.now();
       setTimeout(() => {
         if ("Notification" in window) {
           Notification.requestPermission().then((permission)=>{
             if (permission === "granted") {
-              alert(`Your event '${event}' will finish soon`)
+              const alertText = event ? `Your event '${event}' will finish soon` : 'Your event will finish soon'
+              alert(`${alertText}`);              
             }
           });
         } else {
