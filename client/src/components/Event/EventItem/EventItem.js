@@ -1,28 +1,24 @@
-import React, { useState } from "react";
-import TimerEvent from "../TimerEvent/TimerEvent";
+import React from "react";
 import styles from './EventItem.module.sass';
-import NotificationEvent from "../TimerEvent/NotificationEvent";
-
+import {useTimer} from "../../../hooks/useTimer";
 
 const EventItem = (props) => {
     const {removeTask, completeToState, todo} = props;
-    const [nowLeft, setNowLeft] = useState();
-
+    const {isComplete, durationUntilFinish} = useTimer(todo);
 
     const formatDate = () => {
         const deadlineTime = new Date(todo.deadline)
         const deadlineTimeToLocal = deadlineTime.toLocaleDateString("ru-RU", { hour: "2-digit", minute: "2-digit"})
         return(deadlineTimeToLocal)
     }
-
-    const durationUntilFinish = (left) => {
-        setNowLeft(left);
+    if(isComplete) {
+        completeToState(todo.id, isComplete);
     }
  
     return (
     <>
     <div 
-    className={styles[todo.complete ? 'listItemCompete' : 'listItemNotCompete']} 
+    className={styles[isComplete ? 'listItemCompete' : 'listItemNotCompete']} 
     >
         <div className={styles.eventBox}>
         <span>Your event</span>
@@ -36,22 +32,13 @@ const EventItem = (props) => {
 
         <div className={styles.eventBox}>
         <span>When deadline</span>
-        <div>{nowLeft ? nowLeft : 'No data'}</div>
+        <div>{durationUntilFinish ? durationUntilFinish : 'No data'}</div>
         </div>
 
         <span onClick={()=> removeTask(todo.id)}>
             <i className="fas fa-trash"></i>    
-        </span>  
+        </span> 
     </div>
-
-    <TimerEvent
-        todo={todo}
-        completeToState={completeToState}
-        durationUntilFinish={durationUntilFinish}
-    />
-    <NotificationEvent
-        todo={todo}
-    />
     </>
     )
   };

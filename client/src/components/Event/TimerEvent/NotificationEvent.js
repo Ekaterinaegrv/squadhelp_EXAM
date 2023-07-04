@@ -5,7 +5,9 @@ const NotificationEvent = (props) => {
 
   if (notification && !complete) {
     const notificationTime = new Date(notification);
-    if (notificationTime.getTime() > Date.now()) {
+    if (notificationTime.getTime() < Date.now()) {
+      return null
+    } else {
       const delay = notificationTime.getTime() - Date.now();
       setTimeout(() => {
         if ("Notification" in window) {
@@ -14,6 +16,9 @@ const NotificationEvent = (props) => {
               const alertText = event ? `Your event '${event}' will finish soon` : 'Your event will finish soon'
               alert(`${alertText}`);              
             }
+          })
+          .catch((error) => {
+            console.error(error);
           });
         } else {
           console.log("Notifications not supported by this browser.");

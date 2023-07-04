@@ -71,7 +71,7 @@ import ButtonGroup from './components/ButtonGroup/ButtonGroup';
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/contest/:id" component={PrivateHoc(ContestPage)} />
           <Route exact path="/account" component={PrivateHoc(UserProfile)} />
-          <Route exact path="/events" component={Events} />
+          <Route exact path="/events" component={PrivateHoc(Events)} />
           <Route component={NotFound} />
         </Switch>
         <ChatContainer />

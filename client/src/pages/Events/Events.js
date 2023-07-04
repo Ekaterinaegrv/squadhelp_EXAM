@@ -8,7 +8,6 @@ import NotificationEvent from "../../components/Event/TimerEvent/NotificationEve
 
 const Events = (props) => {
   const [todos, setTodos] = useState([]);
-
   const addTask = (eventInput) => {
   if(eventInput) {
     const {todoText, deadline, notification} = eventInput;
@@ -32,16 +31,16 @@ const Events = (props) => {
 
   }
 
-const removeTask = (id) => {
-  const filtered = todos.filter(elem => elem.id !== id);
-  setTodos([...filtered])
-  localStorage.setItem('myEvents',JSON.stringify([...filtered]))
-}
+  const removeTask = (id) => {
+    const filtered = todos.filter(elem => elem.id !== id);
+    setTodos([...filtered])
+    localStorage.setItem('myEvents',JSON.stringify([...filtered]))
+  }
 
 
-useEffect(()=> {
-   setTodos(JSON.parse(localStorage.getItem('myEvents'))); 
-},[])
+  useEffect(()=> {
+    setTodos(JSON.parse(localStorage.getItem('myEvents'))); 
+  },[])
 
 
  const setCompleteStatus = (id, isComplete) => {
@@ -49,28 +48,27 @@ useEffect(()=> {
       const complete = todos.map((elem)=>
           elem.id === id ? {...elem, complete: elem.complete = true} : {...elem}
       )
-      setTodos([...complete]);
       localStorage.setItem('myEvents',JSON.stringify([...complete]))
     }
  }
 
-const countEventsLeft = todos.reduce((acc, obj) => {
-  if (obj.complete === false) {
-    return acc + 1;
-  } else {
-    return acc;
-  }
-}, 0);
-
+let countEventsLeft;
 if(todos) {
   const compare = (a, b) => {
     if(a.deadline < b.deadline) return -1;
     else if(a.deadline > b.deadline) return 1;
     return 0
   }
-  todos.sort(compare)
-}
+  todos.sort(compare);
 
+  countEventsLeft = todos.reduce((acc, obj) => {
+  if (obj.complete === false) {
+    return acc + 1;
+  } else {
+    return acc;
+  }
+}, 0);
+}
 
       return (
           <>
@@ -87,7 +85,7 @@ if(todos) {
             <div className={styles.todoBox}>
               <h3>You have a {todos ? todos.length : 0} open events</h3>
               <p>If you completed event - just delete it by clicking trash icon</p>
-              <p>Not completed events: {countEventsLeft}</p>
+              <p>Not completed events:{countEventsLeft}</p>
               <ul>
                 {todos ? (todos.map((todo) => {
                     return(
@@ -98,11 +96,10 @@ if(todos) {
                       todo={todo}
                       removeTask={removeTask}
                       completeToState={setCompleteStatus}
-                      countEventsLeft={countEventsLeft}
                       />
-                      {/* <NotificationEvent
+                      <NotificationEvent
                       todo={todo}
-                      /> */}
+                      />
                       </li>
                     )
                 })) 
