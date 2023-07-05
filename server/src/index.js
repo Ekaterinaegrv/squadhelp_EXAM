@@ -5,7 +5,7 @@ require('./dbMongo/mongoose');
 const router = require('./router');
 const controller = require('./socketInit');
 const {errorHandler} = require('./handlerError/handler');
-const { writeToFile } = require('./handlerError/logErrors');
+const { createErrorBackupFile } = require('./handlerError/logErrors');
 var cron = require('node-cron');
 
 const PORT = process.env.PORT || 3000;
@@ -23,10 +23,6 @@ server.listen(PORT,
 controller.createConnection(server);
 
 
-// cron.schedule('0 12 1-31 * *', () => {
-//   writeToFile();
-// });
-
-// cron.schedule('*/15 * * * *', () => {
-//   writeToFile();
-// });
+cron.schedule('0 12 1-31 * *', () => {
+  createErrorBackupFile();
+});
