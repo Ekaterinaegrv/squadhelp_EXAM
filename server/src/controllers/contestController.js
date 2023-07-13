@@ -1,11 +1,10 @@
 const db = require('../models');
 const ServerError =require('../errors/ServerError');
 const contestQueries = require('./queries/contestQueries');
-const userQueries = require('./queries/userQueries');
 const controller = require('../socketInit');
 const UtilFunctions = require('../utils/functions');
 const CONSTANTS = require('../constants');
-const { sendMailFromModerator } = require('../utils/mailToCreator');
+const {rejectOffer, resolveOffer, allowOrBlockOffer} = require('./services/contestServices');
 
 module.exports.dataForContest = async (req, res, next) => {
   const response = {};
@@ -36,18 +35,18 @@ module.exports.dataForContest = async (req, res, next) => {
 };
 
 module.exports.getContestById = async (req, res, next) => {
-  const pending = 'pending';
-  const won = 'won';
-  const rejected = 'rejected';
-  const newStatus = 'new';
-  const block = 'block';
-  const typesForCustomer = [pending, won, rejected].filter(Boolean);
-  const typesForModerator = [pending, won, rejected, newStatus, block].filter(Boolean);
-  const typesForCreator = [pending, won, rejected, newStatus, block].filter(Boolean);
+  const typesForCustomer = [CONSTANTS.OFFER_STATUS_PENDING, CONSTANTS.OFFER_STATUS_WON, CONSTANTS.OFFER_STATUS_REJECTED].filter(Boolean);
+  const typesForModeratorOrCreator = [
+    CONSTANTS.OFFER_STATUS_PENDING, 
+    CONSTANTS.OFFER_STATUS_WON, 
+    CONSTANTS.OFFER_STATUS_REJECTED, 
+    CONSTANTS.OFFER_STATUS_NEW, 
+    CONSTANTS.OFFER_STATUS_BLOCK
+  ].filter(Boolean);
 
-  const creator = req.tokenData.role === CONSTANTS.CREATOR ? { userId: req.tokenData.userId,  status: typesForCreator } : {};
+  const creator = req.tokenData.role === CONSTANTS.CREATOR ? { userId: req.tokenData.userId,  status: typesForModeratorOrCreator } : {};
   const customer = req.tokenData.role === CONSTANTS.CUSTOMER ? { status: typesForCustomer } : {};
-  const moderator = req.tokenData.role === CONSTANTS.MODERATOR ? { status: typesForModerator } : {};
+  const moderator = req.tokenData.role === CONSTANTS.MODERATOR ? { status: typesForModeratorOrCreator } : {};
   const offersTypes = [creator, customer, moderator].filter(Boolean);
             
   try {
@@ -159,89 +158,10 @@ module.exports.setNewOffer = async (req, res, next) => {
   }
 };
 
-const rejectOffer = async (offerId, creatorId, contestId) => {
-  const rejectedOffer = await contestQueries.updateOffer(
-    { status: CONSTANTS.OFFER_STATUS_REJECTED }, { id: offerId });
-  controller.getNotificationController().emitChangeOfferStatus(creatorId,
-    'Someone of yours offers was rejected', contestId);
-  return rejectedOffer;
-};
-const resolveOffer = async (
-  contestId, creatorId, orderId, offerId, priority, transaction) => {
-  const finishedContest = await contestQueries.updateContestStatus({
-    status: db.sequelize.literal(`   CASE
-            WHEN "id"=${ contestId }  AND "orderId"='${ orderId }' THEN '${ CONSTANTS.CONTEST_STATUS_FINISHED }'
-            WHEN "orderId"='${ orderId }' AND "priority"=${ priority +
-    1 }  THEN '${ CONSTANTS.CONTEST_STATUS_ACTIVE }'
-            ELSE '${ CONSTANTS.CONTEST_STATUS_PENDING }'
-            END
-    `),
-  }, { orderId }, transaction);
-  await userQueries.updateUser(
-    { balance: db.sequelize.literal('balance + ' + finishedContest.prize) },
-    creatorId, transaction);
-    const updatedOffers = await contestQueries.updateOfferStatus({
-      status: db.sequelize.literal(` CASE
-              WHEN "id"=${ offerId } THEN '${ CONSTANTS.OFFER_STATUS_WON }'
-              WHEN "status"='${ CONSTANTS.OFFER_STATUS_NEW }' THEN '${ CONSTANTS.OFFER_STATUS_BLOCK }'
-              WHEN "status"='${ CONSTANTS.OFFER_STATUS_PENDING }' THEN '${ CONSTANTS.OFFER_STATUS_REJECTED }'
-              WHEN "status"='${ CONSTANTS.OFFER_STATUS_BLOCK }' THEN '${ CONSTANTS.OFFER_STATUS_BLOCK }'
-              ELSE '${ CONSTANTS.OFFER_STATUS_REJECTED}'
-              END
-      `),
-  }, {
-    contestId,
-  }, transaction);
-  transaction.commit();
-  const arrayRoomsId = [];
-  let updatedOffer;
-  updatedOffers.forEach(offer => {
-    if (offer.status === CONSTANTS.OFFER_STATUS_REJECTED && creatorId !==
-      offer.userId) {
-      arrayRoomsId.push(offer.userId);
-    } 
-    if(offer.status === CONSTANTS.OFFER_STATUS_WON) {
-      updatedOffer = offer;
-    }
-  });
-  if (arrayRoomsId.length > 0) {
-    controller.getNotificationController().emitChangeOfferStatus(arrayRoomsId,
-      'Someone of yours offers was rejected', contestId);
-  }
-  controller.getNotificationController().emitChangeOfferStatus(creatorId,
-    'Someone of your offers WIN', contestId);
-  return updatedOffer;
-};
-
-const allowOffer = async (offerId, email, title, command) => {
-  const updatedOffers = await contestQueries.updateOffer(
-    { status: CONSTANTS.OFFER_STATUS_PENDING }, { id: offerId });
-
-    await sendMailFromModerator({
-      command,
-      email,
-      title
-    });
-
-    return updatedOffers; 
-};
-
-const blockOffer = async (offerId, email, title, command) => {
-  const updatedOffers = await contestQueries.updateOffer(
-    { status: CONSTANTS.OFFER_STATUS_BLOCK }, { id: offerId });
-
-    await sendMailFromModerator({
-      command,
-      email,
-      title
-    });
-
-    return updatedOffers; 
-};
 
 module.exports.setOfferStatus = async (req, res, next) => {
   let transaction; 
-  if (req.body.command === 'reject') {
+  if (req.body.command === CONSTANTS.OFFER_STATUS_REJECTED) {
     try {
       const offer = await rejectOffer(req.body.offerId, req.body.creatorId,
         req.body.contestId);
@@ -249,7 +169,7 @@ module.exports.setOfferStatus = async (req, res, next) => {
     } catch (err) {
       next(err);
     }
-  } if (req.body.command === 'resolve') {
+  } if (req.body.command === CONSTANTS.OFFER_STATUS_RESOLVE) {
     try {
       transaction = await db.sequelize.transaction();
       const winningOffer = await resolveOffer(req.body.contestId,  
@@ -260,21 +180,14 @@ module.exports.setOfferStatus = async (req, res, next) => {
       transaction.rollback();
       next(err);
     }
-  } if (req.body.command === 'pending') {
-    try {                                              
-      const updatedOffers = await allowOffer(req.body.offerId, req.body.email, req.body.title, req.body.command);
+  } if (req.body.command === CONSTANTS.OFFER_STATUS_PENDING || req.body.command === CONSTANTS.OFFER_STATUS_BLOCK) {
+    try {     
+      const updatedOffers = await allowOrBlockOffer(req.body.offerId, req.body.email, req.body.title, req.body.command);
       res.send(updatedOffers);
       } catch (err) {
       next(err);
     }
-  } if (req.body.command === 'block') {
-    try {
-      const updatedOffers = await blockOffer(req.body.offerId, req.body.email, req.body.title, req.body.command);
-      res.send(updatedOffers);
-      } catch (err) {
-      next(err);
-    }
-  }
+  } 
 };
 
 module.exports.getCustomersContests = (req, res, next) => {
@@ -306,11 +219,11 @@ module.exports.getCustomersContests = (req, res, next) => {
 module.exports.getContests = (req, res, next) => {
   const predicates = UtilFunctions.createWhereForAllContests(req.body.typeIndex,
     req.body.contestId, req.body.industry, req.body.awardSort);
-  db.Contest.findAll({
+  const conts = db.Contest.findAll({
     where: predicates.where,
     order: predicates.order,
-    limit: req.body.limit,
-    offset: req.body.offset ? req.body.offset : 0,
+    limit: req.params.limit,
+    offset: req.params.offset ? req.params.offset : 0,
     include: [
       {
         model: db.Offer,
@@ -332,4 +245,7 @@ module.exports.getContests = (req, res, next) => {
     .catch(err => {
       next(new ServerError());
     });
+    console.log('*********************** 11112222   - conts -   11112222');
+  console.log('conts');
+    console.log(conts);
 };

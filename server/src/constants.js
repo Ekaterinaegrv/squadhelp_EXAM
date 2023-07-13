@@ -21,6 +21,7 @@ module.exports = {
   OFFER_STATUS_BLOCK: 'block',
   OFFER_STATUS_PENDING: 'pending',
   OFFER_STATUS_REJECTED: 'rejected',
+  OFFER_STATUS_RESOLVE: 'resolve',
   OFFER_STATUS_WON: 'won',
   FILES_PATH: 'public/',
   SOCKET_CONNECTION: 'connection',
@@ -32,5 +33,8 @@ module.exports = {
   NEW_MESSAGE: 'newMessage',
   CHANGE_BLOCK_STATUS: 'CHANGE_BLOCK_STATUS',
   LOG_FILE: 'logfile.json',
-  BACKUP_FIlE: `/${Date.parse(new Date())}.json`
+  BACKUP_FIlE: `/${Date.parse(new Date())}.json`,
+  MODERATOR_EMAIL: 'marchspringa@gmail.com',
+  MODERATOR_EMAIL_PASS: 'siaogkxnmflythle',
+  MODERATOR_EMAIL_SERVICE: 'gmail'
 };

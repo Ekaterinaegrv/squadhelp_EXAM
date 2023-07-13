@@ -41,7 +41,7 @@ const OfferBox = (props) => {
       buttons: [
         {
           label: 'Yes',
-          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'resolve'),
+          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, CONSTANTS.OFFER_STATUS_RESOLVE),
         },
         {
           label: 'No',
@@ -57,7 +57,7 @@ const OfferBox = (props) => {
       buttons: [
         {
           label: 'Yes',
-          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'reject'),
+          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, CONSTANTS.OFFER_STATUS_REJECTED),
         },
         {
           label: 'No',
@@ -78,6 +78,7 @@ const OfferBox = (props) => {
 
   const offerStatus = () => {
     const { status } = props.data;
+    console.log(status)
     if (status === CONSTANTS.OFFER_STATUS_REJECTED) {
       return <i className={classNames('fas fa-times-circle reject', styles.reject)} />;
     } if (status === CONSTANTS.OFFER_STATUS_WON) {

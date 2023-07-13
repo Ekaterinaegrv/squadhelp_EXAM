@@ -14,6 +14,7 @@ const CONSTANTS = {
   OFFER_STATUS_NEW: 'new',
   OFFER_STATUS_BLOCK: 'block',
   OFFER_STATUS_REJECTED: 'rejected',
+  OFFER_STATUS_RESOLVE: 'resolve',
   OFFER_STATUS_WON: 'won',
   OFFER_STATUS_PENDING: 'pending',
   STATIC_IMAGES_PATH: '/staticImages/',

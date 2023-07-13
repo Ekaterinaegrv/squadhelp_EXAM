@@ -41,7 +41,7 @@ const OfferBoxForModerator = (props) => {
       buttons: [
         {
           label: 'Yes',
-          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'pending'),
+          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, CONSTANTS.OFFER_STATUS_PENDING),
         },
         {
           label: 'No',
@@ -57,7 +57,7 @@ const OfferBoxForModerator = (props) => {
       buttons: [
         {
           label: 'Yes',
-          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, 'block'),
+          onClick: () => props.setOfferStatus(props.data.User.id, props.data.id, CONSTANTS.OFFER_STATUS_BLOCK),
         },
         {
           label: 'No',

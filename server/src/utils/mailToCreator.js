@@ -1,30 +1,29 @@
 const nodemailer = require('nodemailer');
+const { MODERATOR_EMAIL, MODERATOR_EMAIL_PASS, MODERATOR_EMAIL_SERVICE } = require('../constants');
+const CONSTANTS = require('../constants');
 
 module.exports.sendMailFromModerator = async (data) => {
   const {command, email, title} = data;
-  const moderatorEmail = 'marchspringa@gmail.com';
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: MODERATOR_EMAIL_SERVICE,
       auth: {
-        user: moderatorEmail,
-        pass: 'siaogkxnmflythle'
+        user: MODERATOR_EMAIL,
+        pass: MODERATOR_EMAIL_PASS
       }
     });
     
     const mailOptions = {
-      from: moderatorEmail,
+      from: MODERATOR_EMAIL,
       to: email,
-      subject: command === 'pending' ? 'Offer accepted by the moderator' : 'Offer bloked by the moderator',
-      text: `Your offer of the Project ${title} has been ${command === 'pending' ? 'accepted' : 'blocked'} by the moderator`,
+      subject: command === CONSTANTS.OFFER_STATUS_PENDING ? 'Offer accepted by the moderator' : 'Offer bloked by the moderator',
+      text: `Your offer of the Project ${title} has been ${command === CONSTANTS.OFFER_STATUS_PENDING ? 'accepted' : 'blocked'} by the moderator`,
     };
-    
-    transporter.sendMail(mailOptions, function(error, info){
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
-  
+     
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent: ' + info.response);
+    } catch (error) {
+      console.log(error);
+    }
   };
