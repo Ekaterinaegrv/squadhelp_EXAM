@@ -16,7 +16,7 @@ export const useTimer = (todo) => {
     useEffect(() => {  
         const dateNow = Date.parse(new Date());                    
         intervalHandler();
-        const idInterval = setInterval(() => intervalHandler(), 2000);      
+        const idInterval = setInterval(() => intervalHandler(), 1000);      
 
         const idTimer = setTimeout(() => {
             setIsComplete(true);

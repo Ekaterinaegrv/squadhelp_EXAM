@@ -6,6 +6,7 @@
     "axios": "^0.21.1",
     "card-validator": "^8.1.1",
     "classnames": "^2.3.1",
+    "eslint-plugin-jest": "^27.2.3",
     "flickity": "^2.2.2",
     "formik": "^2.2.6",
     "history": "^5.0.0",
@@ -40,7 +41,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "lint": "eslint src"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -54,6 +56,11 @@
   "devDependencies": {
     "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^16.0.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.2",
     "sass": "^1.52.3"
   }
 }

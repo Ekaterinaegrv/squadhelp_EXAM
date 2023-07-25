@@ -8,6 +8,8 @@ import NotificationEvent from "../../components/Event/TimerEvent/NotificationEve
 
 const Events = (props) => {
   const [todos, setTodos] = useState([]);
+  const [isVisibleRedCard, setIsVisibleRedCard] = useState(false);
+
   const addTask = (eventInput) => {
   if(eventInput) {
     const {todoText, deadline, notification} = eventInput;
@@ -27,9 +29,7 @@ const Events = (props) => {
       setTodos([newItem])
       localStorage.setItem('myEvents',JSON.stringify([newItem]));
     }
-  }
-
-  }
+  }}
 
   const removeTask = (id) => {
     const filtered = todos.filter(elem => elem.id !== id);
@@ -37,14 +37,13 @@ const Events = (props) => {
     localStorage.setItem('myEvents',JSON.stringify([...filtered]))
   }
 
-
   useEffect(()=> {
-    setTodos(JSON.parse(localStorage.getItem('myEvents'))); 
+    setTodos(JSON.parse(localStorage.getItem('myEvents')));
   },[])
 
-
- const setCompleteStatus = (id, isComplete) => {
+  const setCompleteStatus = (id, isComplete) => {
     if(isComplete) {
+      setIsVisibleRedCard(isComplete);
       const complete = todos.map((elem)=>
           elem.id === id ? {...elem, complete: elem.complete = true} : {...elem}
       )
@@ -52,7 +51,6 @@ const Events = (props) => {
     }
  }
 
-let countEventsLeft;
 if(todos) {
   const compare = (a, b) => {
     if(a.deadline < b.deadline) return -1;
@@ -61,14 +59,20 @@ if(todos) {
   }
   todos.sort(compare);
 
-  countEventsLeft = todos.reduce((acc, obj) => {
-  if (obj.complete === false) {
-    return acc + 1;
-  } else {
-    return acc;
-  }
-}, 0);
 }
+
+const showQuantityInRedCard = () => {
+  const countEventsComplete = todos.filter(elem => elem.complete);
+  return (
+    countEventsComplete ? countEventsComplete.length : 0
+  )
+}
+
+const removeCard = () => {
+  setIsVisibleRedCard(false)
+}
+
+
 
       return (
           <>
@@ -76,7 +80,6 @@ if(todos) {
           <section className={styles.containerPadding}>
             <div className={styles.formBox}>
               <h1>Create your events list</h1>
-              
               <EventForm 
                 addTask={addTask}
                 />
@@ -85,7 +88,13 @@ if(todos) {
             <div className={styles.todoBox}>
               <h3>You have a {todos ? todos.length : 0} open events</h3>
               <p>If you completed event - just delete it by clicking trash icon</p>
-              <p>Not completed events:{countEventsLeft}</p>
+              {isVisibleRedCard &&
+              <div className={styles.redCard}>
+                <p>Completed events: {showQuantityInRedCard()}</p>
+                <span onClick={() => removeCard()}>X</span> 
+              </div>}
+              
+
               <ul>
                 {todos ? (todos.map((todo) => {
                     return(

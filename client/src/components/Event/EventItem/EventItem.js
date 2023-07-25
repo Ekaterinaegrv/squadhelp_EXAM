@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from './EventItem.module.sass';
 import {useTimer} from "../../../hooks/useTimer";
 
@@ -11,9 +11,13 @@ const EventItem = (props) => {
         const deadlineTimeToLocal = deadlineTime.toLocaleDateString("ru-RU", { hour: "2-digit", minute: "2-digit"})
         return(deadlineTimeToLocal)
     }
-    if(isComplete) {
-        completeToState(todo.id, isComplete);
-    }
+    useEffect(() => {
+        if(isComplete) {
+            completeToState(todo.id, isComplete);
+        }
+    }, [isComplete])
+    
+    
  
     return (
     <>
