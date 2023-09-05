@@ -9,14 +9,14 @@ const filePath = env === 'production'
   ? '/var/www/html/logErrors'
   : devFilePath;
 
-  
+
 if (!fs.existsSync(filePath)) {
   fs.mkdirSync(filePath, {
     recursive: true,
-  })
-  .appendFileSync(`${filePath}/logfile.txt`)
-
+  });
 }
+
+fs.appendFileSync(`${filePath}/logfile.txt`, ''); 
 
 
 module.exports.loggerErrors = (err) => {
